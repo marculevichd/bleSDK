@@ -100,7 +100,9 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(modifier: Modifier = Modifier) {
     // Состояние для хранения списка найденных устройств
     var devices by remember { mutableStateOf(listOf<BLEDevice>()) }
+    var devices2 by remember { mutableStateOf(listOf<BLEDevice>()) }
     var loading by remember { mutableStateOf(false) }
+    var loading2 by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val sdkManager = SDKManager()
 
@@ -169,6 +171,71 @@ fun MainScreen(modifier: Modifier = Modifier) {
         }
 
         if (loading){
+            Spacer(modifier = Modifier.height(100.dp))
+            CircularProgressIndicator()
+        }
+
+
+        Button(onClick = {
+            loading2 = true
+            println("??? MainScreen ButtonBYNAME clicked")
+            Timber.d("??? MainScreen ButtonBYNAME clicked")
+            sdkManager.startScanByName(onFind = { device ->
+                println("??? MainScreen startScanBYNAME onFind")
+                Timber.d("??? MainScreen startScanBYNAME onFind")
+                if (device != null) {
+                    loading2 = false
+
+                    // Создаем новый список с добавленным устройством
+                    devices2 = devices2 + device
+                    println("??? MainScreen startScanBYNAME device added: ${device.mDeviceAddress}")
+                    Timber.d("??? MainScreen startScanBYNAME device added: ${device.mDeviceAddress}")
+                }
+            })
+        }) {
+            Text(text = "Scan By Name")
+        }
+
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(text = "Found Devices by name:")
+
+        // Отображение списка устройств
+        devices2.forEach { device ->
+            ClickableText(
+                text = AnnotatedString(
+                    ("девайс адрес " + device.mDeviceAddress + " имя " + device.mDeviceName)
+                        ?: "Unknown Device"
+                ),
+                onClick = {
+                    loading2 = true
+
+                    println("??? MainScreen Clicked on device2: ${device.mDeviceAddress}")
+                    Timber.d("??? MainScreen Clicked on device2: ${device.mDeviceAddress}")
+
+                    sdkManager.connectByAddress(device,
+                        onSuccess = {
+                            loading2 = false
+                            Toast.makeText(context, "Успешное подключение", Toast.LENGTH_SHORT).show()
+                            sdkManager.getDeviceInfo()
+                            Toast.makeText(context, "Началось getDeviceInfo", Toast.LENGTH_SHORT).show()
+                        },
+                        OnTrable = {
+                            loading2 = false
+                            Toast.makeText(context, "Что то пошло не так. Глянуть логи надо", Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                    // Здесь можно добавить логику, например, подключение к устройству
+                }
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        if (devices2.size != 0) {
+            Text(text = "Сверху кликабельный мак-адрес- начнется подключение")
+        }
+
+        if (loading2){
             Spacer(modifier = Modifier.height(100.dp))
             CircularProgressIndicator()
         }

@@ -43,6 +43,33 @@ class SDKManager {
         }, 1000) // Задержка в 1 секунду
     }
 
+    fun startScanByName(
+        onFind: (BLEDevice?) -> Unit,
+    ) {
+        println("??? startScanByName")
+        Timber.d("??? startScanByName")
+
+        BLEManager.registerScanCallBack(object : ScanCallBack.ICallBack {
+            override fun onStart() {
+                println("??? startScanByName onStart")
+                Timber.d("??? startScanByName onStart")
+            }
+
+            override fun onFindDevice(p0: BLEDevice?) {
+                println("??? startScanByName onFindDevice p0 = $p0")
+                Timber.d("??? startScanByName onFindDevice p0 = $p0")
+                onFind(p0)
+            }
+
+            override fun onScanFinished() {
+                println("??? startScanByName onScanFinished")
+                Timber.d("??? startScanByName onScanFinished")
+            }
+        })
+        BLEManager.startScanDevicesByName("META")
+
+    }
+
     fun connectByAddress(
         BLEDevice: BLEDevice,
         onSuccess: () -> Unit,
