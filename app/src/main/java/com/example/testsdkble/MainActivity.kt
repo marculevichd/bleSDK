@@ -33,6 +33,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.example.testsdkble.ui.theme.TestSDKBLETheme
+import com.ido.ble.BLEManager
 import com.ido.ble.bluetooth.device.BLEDevice
 import timber.log.Timber
 
@@ -42,11 +43,14 @@ class MainActivity : ComponentActivity() {
     private val REQUIRED_PERMISSIONS = arrayOf(
         Manifest.permission.BLUETOOTH,
         Manifest.permission.BLUETOOTH_ADMIN,
-        Manifest.permission.ACCESS_FINE_LOCATION
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.ACCESS_COARSE_LOCATION
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             TestSDKBLETheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
