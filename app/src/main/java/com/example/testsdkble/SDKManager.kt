@@ -17,7 +17,6 @@ class SDKManager {
     ) {
         println("??? startScan")
         Timber.d("??? startScan")
-
         BLEManager.registerScanCallBack(object : ScanCallBack.ICallBack {
             override fun onStart() {
                 println("??? startScan onStart")
@@ -108,7 +107,6 @@ class SDKManager {
         println("??? BLEManager.connect() called with device: ${BLEDevice.mDeviceAddress}")
         Timber.d("??? BLEManager.connect() called with device: ${BLEDevice.mDeviceAddress}")
     }
-
 
     fun getDeviceInfo() {
         println("??? getDeviceInfo")
