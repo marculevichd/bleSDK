@@ -53,11 +53,11 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(modifier: Modifier = Modifier) {
     // Состояние для хранения списка найденных устройств
     var devices by remember { mutableStateOf(listOf<BLEDevice>()) }
-    var loading by remember { mutableStateOf(false) }
+    var loading = remember { mutableStateOf(false) }
     var isConnected by remember { mutableStateOf(false) }
     var isBind by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val sdkManager = SDKManager()
+    val sdkManager = SDKManager(loading = loading)
 
     LazyColumn(
         modifier = modifier
@@ -67,14 +67,14 @@ fun MainScreen(modifier: Modifier = Modifier) {
     ) {
         item {
             Button(onClick = {
-                loading = true
+                loading.value = true
                 println("??? MainScreen Button clicked")
                 Timber.d("??? MainScreen Button clicked")
                 sdkManager.startScan(onFind = { device ->
                     println("??? MainScreen startScan onFind")
                     Timber.d("??? MainScreen startScan onFind")
                     if (device != null) {
-                        loading = false
+                        loading.value = true
 
                         // Создаем новый список с добавленным устройством
                         devices = devices + device
@@ -91,12 +91,12 @@ fun MainScreen(modifier: Modifier = Modifier) {
         item {
             Button(
                 onClick = {
-                    loading = true
+                    loading.value = true
                     println("??? Button Start Bind")
                     Timber.d("??? Button Start Bind")
                     sdkManager.bind(
                         onSuccess = {
-                            loading = false
+                            loading.value = true
                             isConnected = false
                             isBind = true
                             Toast.makeText(context, "Успешная привязка", Toast.LENGTH_SHORT)
@@ -104,7 +104,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                             sdkManager.registerGetDeviceParaCallBack()
                         },
                         OnTrable = {
-                            loading = false
+                            loading.value = true
                             isConnected = false
                             Toast.makeText(
                                 context,
@@ -125,22 +125,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
         item {
             Button(
                 onClick = {
-                    loading = true
-                    println("??? Button Get Language")
-                    Timber.d("??? Button Get Language")
-                    sdkManager.getLanguage()
-                },
-                enabled = isConnected
-            ) {
-                Text(text = "Get Language")
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-
-        item {
-            Button(
-                onClick = {
-                    loading = true
+                    loading.value = true
                     println("??? Button Get PuffArray")
                     Timber.d("??? Button Get PuffArray")
                     sdkManager.getGetPuffArray()
@@ -152,7 +137,230 @@ fun MainScreen(modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(16.dp))
         }
 
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button getGetChildLockSetting")
+                    Timber.d("??? Button getGetChildLockSetting")
+                    sdkManager.getGetChildLockSetting()
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "getGetChildLockSetting")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button getDeviceInfo")
+                    Timber.d("??? Button getDeviceInfo")
+                    sdkManager.getDeviceInfo()
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "getDeviceInfo")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button getPuffsControl")
+                    Timber.d("??? Button getPuffsControl")
+                    sdkManager.getPuffsControl()
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "getPuffsControl")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button getSessionMode")
+                    Timber.d("??? Button getSessionMode")
+                    sdkManager.getSessionMode()
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "getSessionMode")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button getConsciousShield")
+                    Timber.d("??? Button getConsciousShield")
+                    sdkManager.getConsciousShield()
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "getConsciousShield")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button getFriendMode")
+                    Timber.d("??? Button getFriendMode")
+                    sdkManager.getFriendMode()
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "getFriendMode")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button getMetaAi")
+                    Timber.d("??? Button getMetaAi")
+                    sdkManager.getMetaAi()
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "getMetaAi")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button getByttery")
+                    Timber.d("??? Button getByttery")
+                    sdkManager.getByttery()
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "getByttery")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button getScreen")
+                    Timber.d("??? Button getScreen")
+                    sdkManager.getScreen()
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "getScreen")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button getVolume")
+                    Timber.d("??? Button getVolume")
+                    sdkManager.getVolume()
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "getVolume")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button getLanguage")
+                    Timber.d("??? Button getLanguage")
+                    sdkManager.getLanguage()
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "getLanguage")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button getNightMode")
+                    Timber.d("??? Button getNightMode")
+                    sdkManager.getNightMode()
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "getNightMode")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button getPowerSetting")
+                    Timber.d("??? Button getPowerSetting")
+                    sdkManager.getPowerSetting()
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "getPowerSetting")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button getOverPuffSetting")
+                    Timber.d("??? Button getOverPuffSetting")
+                    sdkManager.getOverPuffSetting()
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "getOverPuffSetting")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button getPuffTotalNumber")
+                    Timber.d("??? Button getPuffTotalNumber")
+                    sdkManager.getPuffTotalNumber()
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "getPuffTotalNumber")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
 
         item {
@@ -172,10 +380,10 @@ fun MainScreen(modifier: Modifier = Modifier) {
                             ("девайс адрес " + devices[device].mDeviceAddress + " имя " + devices[device].mDeviceName)
                         ),
                         onClick = {
-                            loading = true
+                            loading.value = true
                             sdkManager.connectByAddress(devices[device],
                                 onSuccess = {
-                                    loading = false
+                                    loading.value = true
                                     isConnected = true
                                     Toast.makeText(
                                         context,
@@ -185,7 +393,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                                         .show()
                                 },
                                 OnTrable = {
-                                    loading = false
+                                    loading.value = true
                                     Toast.makeText(
                                         context,
                                         "Что-то пошло не так. Глянуть логи надо",
@@ -205,7 +413,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
         }
 
         item {
-            if (loading) {
+            if (loading.value) {
                 CircularProgressIndicator(
                     modifier = Modifier
                         .fillMaxSize()
