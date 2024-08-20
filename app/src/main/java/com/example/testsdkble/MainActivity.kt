@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -56,8 +58,10 @@ fun MainScreen(modifier: Modifier = Modifier) {
     var loading = remember { mutableStateOf(false) }
     var isConnected by remember { mutableStateOf(false) }
     var isBind by remember { mutableStateOf(false) }
+    var resultMeth =
+        remember { mutableStateOf("здесь будут результаты методов (кроме найденых устройств)") }
     val context = LocalContext.current
-    val sdkManager = SDKManager(loading = loading)
+    val sdkManager = SDKManager(loading = loading, resultMeth = resultMeth)
 
     LazyColumn(
         modifier = modifier
@@ -65,6 +69,27 @@ fun MainScreen(modifier: Modifier = Modifier) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+
+
+        item {
+            Box(
+                modifier = Modifier
+                    .height(300.dp)
+                    .fillMaxWidth()
+                    .background(Color.Yellow)
+            ) {
+                if (loading.value) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+
+                Text(
+                    color = Color.Black,
+                    text = resultMeth.value
+                )
+            }
+        }
         item {
             Button(onClick = {
                 loading.value = true
@@ -85,40 +110,6 @@ fun MainScreen(modifier: Modifier = Modifier) {
             }) {
                 Text(text = "Start Scan")
             }
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-
-        item {
-            Button(
-                onClick = {
-                    loading.value = true
-                    println("??? Button Start Bind")
-                    Timber.d("??? Button Start Bind")
-                    sdkManager.bind(
-                        onSuccess = {
-                            loading.value = true
-                            isConnected = false
-                            isBind = true
-                            Toast.makeText(context, "Успешная привязка", Toast.LENGTH_SHORT)
-                                .show()
-                            sdkManager.registerGetDeviceParaCallBack()
-                        },
-                        OnTrable = {
-                            loading.value = true
-                            isConnected = false
-                            Toast.makeText(
-                                context,
-                                "Что-то пошло не так",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    )
-                },
-                enabled = isConnected
-            ) {
-                Text(text = "Start Bind (падает ошибка)")
-            }
-
             Spacer(modifier = Modifier.height(16.dp))
         }
 
@@ -383,6 +374,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                             loading.value = true
                             sdkManager.connectByAddress(devices[device],
                                 onSuccess = {
+                                    sdkManager.registerGetDeviceParaCallBack()
                                     loading.value = true
                                     isConnected = true
                                     Toast.makeText(
@@ -409,16 +401,6 @@ fun MainScreen(modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(16.dp))
             if (devices.size != 0) {
                 Text(text = "Сверху кликабельный мак-адрес- начнется подключение")
-            }
-        }
-
-        item {
-            if (loading.value) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Gray)
-                )
             }
         }
     }

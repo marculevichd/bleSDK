@@ -33,7 +33,8 @@ import timber.log.Timber
 
 
 class SDKManager(
-    val loading : MutableState<Boolean>
+    val loading : MutableState<Boolean>,
+    val resultMeth : MutableState<String>
 ) {
 
     fun startScan(
@@ -180,48 +181,56 @@ class SDKManager(
 
             override fun onGetBtA2dpHfpStatus(p0: BtA2dpHfpStatus?) {
                 loading.value = false
+                resultMeth.value = p0.toString()
                 println("??? registerGetDeviceParaCallBack onGetBtA2dpHfpStatus p0=$p0")
                 Timber.d("??? registerGetDeviceParaCallBack onGetBtA2dpHfpStatus p0=$p0")
             }
 
             override fun onGetPuffArray(p0: CigarettesGetPuffArrayReplyData?) {
                 loading.value = false
+                resultMeth.value = p0.toString()
                 println("??? registerGetDeviceParaCallBack onGetPuffArray p0=$p0")
                 Timber.d("??? registerGetDeviceParaCallBack onGetPuffArray p0=$p0")
             }
 
             override fun onGetChildLockSetting(p0: CigarettesSetChildLock?) {
                 loading.value = false
+                resultMeth.value = p0.toString()
                 println("??? registerGetDeviceParaCallBack onGetChildLockSetting p0=$p0")
                 Timber.d("??? registerGetDeviceParaCallBack onGetChildLockSetting p0=$p0")
             }
 
             override fun onGetPowerSetting(p0: CigarettesGetPowerSettingReplayData?) {
                 loading.value = false
+                resultMeth.value = p0.toString()
                 println("??? registerGetDeviceParaCallBack onGetPowerSetting p0=$p0")
                 Timber.d("??? registerGetDeviceParaCallBack onGetPowerSetting p0=$p0")
             }
 
             override fun onGetOverSetting(p0: CigarettesGetOverPuffSettingReplayData?) {
                 loading.value = false
+                resultMeth.value = p0.toString()
                 println("??? registerGetDeviceParaCallBack onGetOverSetting p0=$p0")
                 Timber.d("??? registerGetDeviceParaCallBack onGetOverSetting p0=$p0")
             }
 
             override fun onGetDeviceInfo(cigarettesDeviceInfo: CigarettesDeviceInfo) {
                 loading.value = false
+                resultMeth.value = cigarettesDeviceInfo.toString()
                 println("??? registerGetDeviceParaCallBack onGetDeviceInfo cigarettesDeviceInfo=$cigarettesDeviceInfo")
                 Timber.d("??? registerGetDeviceParaCallBack onGetDeviceInfo cigarettesDeviceInfo=$cigarettesDeviceInfo")
             }
 
             override fun onGetPuffsControl(p0: CigarettesPuffsControl?) {
                 loading.value = false
+                resultMeth.value = p0.toString()
                 println("??? registerGetDeviceParaCallBack onGetPuffsControl p0=$p0")
                 Timber.d("??? registerGetDeviceParaCallBack onGetPuffsControl p0=$p0")
             }
 
             override fun onGetSessionMode(p0: CigarettesSessionMode?) {
                 loading.value = false
+                resultMeth.value = p0.toString()
                 println("??? registerGetDeviceParaCallBack onGetSessionMode p0=$p0")
                 Timber.d("??? registerGetDeviceParaCallBack onGetSessionMode p0=$p0")
             }
@@ -240,48 +249,56 @@ class SDKManager(
 
             override fun onGetMetaAI(p0: CigarettesMetaAI?) {
                 loading.value = false
+                resultMeth.value = p0.toString()
                 println("??? registerGetDeviceParaCallBack onGetMetaAI p0=$p0")
                 Timber.d("??? registerGetDeviceParaCallBack onGetMetaAI p0=$p0")
             }
 
             override fun onGetBattery(p0: CigarettesBattery?) {
                 loading.value = false
+                resultMeth.value = p0.toString()
                 println("??? registerGetDeviceParaCallBack onGetBattery p0=$p0")
                 Timber.d("??? registerGetDeviceParaCallBack onGetBattery p0=$p0")
             }
 
             override fun onGetScreen(p0: CigarettesScreen?) {
                 loading.value = false
+                resultMeth.value = p0.toString()
                 println("??? registerGetDeviceParaCallBack p0=$p0")
                 Timber.d("??? registerGetDeviceParaCallBack p0=$p0")
             }
 
             override fun onGetVolume(p0: CigarettesVolume?) {
                 loading.value = false
+                resultMeth.value = p0.toString()
                 println("??? registerGetDeviceParaCallBack onGetVolume p0=$p0")
                 Timber.d("??? registerGetDeviceParaCallBack onGetVolume p0=$p0")
             }
 
             override fun onGetLanguage(p0: CigarettesLanguage?) {
                 loading.value = false
+                resultMeth.value = p0.toString()
                 println("??? registerGetDeviceParaCallBack onGetLanguage p0=$p0")
                 Timber.d("??? registerGetDeviceParaCallBack onGetLanguage p0=$p0")
             }
 
             override fun onGetNightMode(p0: CigarettesNightMode?) {
                 loading.value = false
+                resultMeth.value = p0.toString()
                 println("??? registerGetDeviceParaCallBack onGetNightMode p0=$p0")
                 Timber.d("??? registerGetDeviceParaCallBack onGetNightMode p0=$p0")
             }
 
             override fun onGetPuffTotalNumber(p0: CigarettesPuffTotalNumber?) {
                 loading.value = false
+                resultMeth.value = p0.toString()
                 println("??? registerGetDeviceParaCallBack onGetPuffTotalNumber p0=$p0")
                 Timber.d("??? registerGetDeviceParaCallBack onGetPuffTotalNumber p0=$p0")
             }
 
             override fun onGetTime(p0: CigarettesSetTheTimeTheDevice?) {
                 loading.value = false
+                resultMeth.value = p0.toString()
                 println("??? registerGetDeviceParaCallBack onGetTime p0=$p0")
                 Timber.d("??? registerGetDeviceParaCallBack onGetTime p0=$p0")
             }
@@ -293,10 +310,6 @@ class SDKManager(
     ) {
         println("??? getGetPuffArray")
         Timber.d("??? getGetPuffArray")
-        val cigarettesGetPuffArray = CigarettesGetPuffArray()
-        cigarettesGetPuffArray.last_puff_number = 1
-        cigarettesGetPuffArray.first_puff_number = 2
-//        BLEManager.getGetPuffArray(cigarettesGetPuffArray)
         BLEManager.getGetPuffArray()
     }
 
