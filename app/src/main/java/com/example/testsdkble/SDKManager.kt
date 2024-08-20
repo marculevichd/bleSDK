@@ -296,7 +296,8 @@ class SDKManager(
         val cigarettesGetPuffArray = CigarettesGetPuffArray()
         cigarettesGetPuffArray.last_puff_number = 1
         cigarettesGetPuffArray.first_puff_number = 2
-        BLEManager.getGetPuffArray(cigarettesGetPuffArray)
+//        BLEManager.getGetPuffArray(cigarettesGetPuffArray)
+        BLEManager.getGetPuffArray()
     }
 
     fun getGetChildLockSetting(

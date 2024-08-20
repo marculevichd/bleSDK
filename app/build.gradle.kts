@@ -75,7 +75,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(files("libs/IDoBLELib-metaSDk-1.00.05.jar"))
+    implementation(files("libs/IDoBLELib-metaSDk-1.00.06.jar"))
     implementation("com.google.code.gson:gson:2.8.8")
 
 
