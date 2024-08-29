@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.example.testsdkble.ui.theme.TestSDKBLETheme
 import com.ido.ble.bluetooth.device.BLEDevice
 import timber.log.Timber
+import java.io.File
 
 class MainActivity : ComponentActivity() {
 
@@ -109,6 +110,29 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 })
             }) {
                 Text(text = "Start Scan")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(onClick = {
+                loading.value = true
+                println("??? MainScreen Button logs")
+                Timber.d("??? MainScreen Button logs")
+
+
+
+                val logsDirectory = File(context.getExternalFilesDir(null), "MyLogs")
+                if (!logsDirectory.exists()) {
+                    logsDirectory.mkdirs()  // Создаем каталог, если его нет
+                }
+                val filePath = "${logsDirectory.absolutePath}/flashlog.txt"
+
+                sdkManager.collectDeviceAllFlashLog(filePath)
+            },
+                enabled = isConnected
+            ) {
+                Text(text = "Start collect logs")
             }
             Spacer(modifier = Modifier.height(16.dp))
         }

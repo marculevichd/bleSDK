@@ -8,8 +8,10 @@ import com.ido.ble.bluetooth.connect.ConnectFailedReason
 import com.ido.ble.bluetooth.device.BLEDevice
 import com.ido.ble.callback.BindCallBack
 import com.ido.ble.callback.ConnectCallBack
+import com.ido.ble.callback.DeviceLogCallBack
 import com.ido.ble.callback.GetDeviceParaCallBack
 import com.ido.ble.callback.ScanCallBack
+import com.ido.ble.firmware.log.flash.ICollectFlashLogListener
 import com.ido.ble.protocol.model.BtA2dpHfpStatus
 import com.ido.ble.protocol.model.CigarettesBattery
 import com.ido.ble.protocol.model.CigarettesConsciousShield
@@ -17,7 +19,6 @@ import com.ido.ble.protocol.model.CigarettesDeviceInfo
 import com.ido.ble.protocol.model.CigarettesFriendMode
 import com.ido.ble.protocol.model.CigarettesGetOverPuffSettingReplayData
 import com.ido.ble.protocol.model.CigarettesGetPowerSettingReplayData
-import com.ido.ble.protocol.model.CigarettesGetPuffArray
 import com.ido.ble.protocol.model.CigarettesGetPuffArrayReplyData
 import com.ido.ble.protocol.model.CigarettesLanguage
 import com.ido.ble.protocol.model.CigarettesMetaAI
@@ -30,11 +31,12 @@ import com.ido.ble.protocol.model.CigarettesSetChildLock
 import com.ido.ble.protocol.model.CigarettesSetTheTimeTheDevice
 import com.ido.ble.protocol.model.CigarettesVolume
 import timber.log.Timber
+import java.io.File
 
 
 class SDKManager(
-    val loading : MutableState<Boolean>,
-    val resultMeth : MutableState<String>
+    val loading: MutableState<Boolean>,
+    val resultMeth: MutableState<String>
 ) {
 
     fun startScan(
@@ -90,8 +92,8 @@ class SDKManager(
                 Timber.d("??? startScanByName onScanFinished")
             }
         })
-        BLEManager.startScanDevicesByName("META")
-
+//        BLEManager.startScanDevicesByName("META")
+        BLEManager.scanAndConnect("META")
     }
 
     fun connectByAddress(
@@ -462,6 +464,44 @@ class SDKManager(
 //    BLEManager.getPowerSetting()
 //    BLEManager.getOverPuffSetting()
 //    BLEManager.getPuffTotalNumber()
+
+
+    fun collectDeviceAllFlashLog(path: String) {
+        println("??? collectDeviceAllFlashLog")
+        Timber.d("??? collectDeviceAllFlashLog")
+
+        val timeoutSecond = 30
+
+        val listenerTest: ICollectFlashLogListener = object : ICollectFlashLogListener {
+            override fun onStart() {
+                println("??? collectDeviceAllFlashLog ICollectFlashLogListener onStart")
+                Timber.d("??? collectDeviceAllFlashLog ICollectFlashLogListener onStart")
+            }
+
+            override fun onFinish() {
+                println("??? collectDeviceAllFlashLog ICollectFlashLogListener onFinish")
+                Timber.d("??? collectDeviceAllFlashLog ICollectFlashLogListener onFinish")
+
+                val file = File(path)
+                if (file.exists()) {
+                    println("??? Лог-файл создан: ${file.absolutePath}")
+                    Timber.d("??? Лог-файл создан: ${file.absolutePath}")
+                } else {
+                    println("??? Лог-файл не был создан")
+                    Timber.d("??? Лог-файл не был создан")
+                }
+            }
+        }
+
+        val deviceLogCallBack = object : DeviceLogCallBack.ICallBack {
+            override fun onGetHeatLog(p0: String?) {
+                println("??? collectDeviceAllFlashLog deviceLogCallBack onGetHeatLog p0 = $p0")
+                Timber.d("??? collectDeviceAllFlashLog deviceLogCallBack onGetHeatLog p0 = $p0")
+            }
+        }
+        BLEManager.collectDeviceAllFlashLog(path, timeoutSecond, listenerTest);
+        BLEManager.registerDeviceLogCallBack(deviceLogCallBack);
+    }
 
 
 }
