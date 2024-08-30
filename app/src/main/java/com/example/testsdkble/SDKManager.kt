@@ -11,6 +11,7 @@ import com.ido.ble.callback.CigarettesSetCallBack
 import com.ido.ble.callback.ConnectCallBack
 import com.ido.ble.callback.DeviceLogCallBack
 import com.ido.ble.callback.GetDeviceParaCallBack
+import com.ido.ble.callback.GetPuffArrayCallBack
 import com.ido.ble.callback.ScanCallBack
 import com.ido.ble.firmware.log.flash.ICollectFlashLogListener
 import com.ido.ble.protocol.model.BtA2dpHfpStatus
@@ -20,6 +21,8 @@ import com.ido.ble.protocol.model.CigarettesDeviceInfo
 import com.ido.ble.protocol.model.CigarettesFriendMode
 import com.ido.ble.protocol.model.CigarettesGetOverPuffSettingReplayData
 import com.ido.ble.protocol.model.CigarettesGetPowerSettingReplayData
+import com.ido.ble.protocol.model.CigarettesGetPuffArray
+import com.ido.ble.protocol.model.CigarettesGetPuffArrayReplyData
 import com.ido.ble.protocol.model.CigarettesLanguage
 import com.ido.ble.protocol.model.CigarettesMetaAI
 import com.ido.ble.protocol.model.CigarettesNightMode
@@ -216,12 +219,6 @@ class SDKManager(
                 Timber.d("??? registerGetDeviceParaCallBack onGetBtA2dpHfpStatus p0=$p0")
             }
 
-//            override fun onGetPuffArray(p0: CigarettesGetPuffArrayReplyData?) {
-//                loading.value = false
-//                resultMeth.value = p0.toString()
-//                println("??? registerGetDeviceParaCallBack onGetPuffArray p0=$p0")
-//                Timber.d("??? registerGetDeviceParaCallBack onGetPuffArray p0=$p0")
-//            }
 
             override fun onGetChildLockSetting(p0: CigarettesSetChildLock?) {
                 loading.value = false
@@ -336,12 +333,37 @@ class SDKManager(
         BLEManager.registerGetDeviceParaCallBack(callBack)
     }
 
-//    fun getGetPuffArray(
-//    ) {
-//        println("??? getGetPuffArray")
-//        Timber.d("??? getGetPuffArray")
-//        BLEManager.getGetPuffArray()
-//    }
+    fun getGetPuffArray(
+    ) {
+        println("??? getGetPuffArray")
+        Timber.d("??? getGetPuffArray")
+
+        val callBack = object : GetPuffArrayCallBack.ICallBack {
+            override fun onProgress(p0: Int) {
+                resultMeth.value = p0.toString()
+                println("??? getGetPuffArray callback onProgress p0=$p0")
+                Timber.d("??? getGetPuffArray callback onProgress p0=$p0")
+            }
+
+            override fun onSucceed(p0: CigarettesGetPuffArrayReplyData?) {
+                resultMeth.value = p0.toString()
+                println("??? getGetPuffArray callback onSucceed p0=$p0")
+                Timber.d("??? getGetPuffArray callback onSucceed p0=$p0")
+            }
+
+            override fun onFailed(p0: Int) {
+                resultMeth.value = p0.toString()
+                println("??? getGetPuffArray callback onFailed p0=$p0")
+                Timber.d("??? getGetPuffArray callback onFailed p0=$p0")
+            }
+        }
+        BLEManager.registerGetPuffArrayCallBack(callBack)
+
+        val cigarettesGetPuffArray : CigarettesGetPuffArray = CigarettesGetPuffArray()
+        cigarettesGetPuffArray.first_puff_number = 0
+        cigarettesGetPuffArray.last_puff_number = 0
+        BLEManager.getGetPuffArray(cigarettesGetPuffArray)
+    }
 
     fun getGetChildLockSetting(
     ) {

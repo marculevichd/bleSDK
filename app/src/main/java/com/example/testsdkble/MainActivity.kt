@@ -145,7 +145,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                     loading.value = true
                     println("??? Button Get PuffArray")
                     Timber.d("??? Button Get PuffArray")
-//                    sdkManager.getGetPuffArray()
+                    sdkManager.getGetPuffArray()
                 },
                 enabled = isConnected
             ) {
