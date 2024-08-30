@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -58,6 +59,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
     var devices by remember { mutableStateOf(listOf<BLEDevice>()) }
     var loading = remember { mutableStateOf(false) }
     var isConnected by remember { mutableStateOf(false) }
+    var isStartSearch by remember { mutableStateOf(false) }
     var isBind by remember { mutableStateOf(false) }
     var resultMeth =
         remember { mutableStateOf("здесь будут результаты методов (кроме найденых устройств)") }
@@ -115,21 +117,21 @@ fun MainScreen(modifier: Modifier = Modifier) {
         }
 
         item {
-            Button(onClick = {
+            Button(
+                onClick = {
                 loading.value = true
                 println("??? MainScreen Button logs")
                 Timber.d("??? MainScreen Button logs")
 
 
+                    val logsDirectory = File(context.getExternalFilesDir(null), "MyLogs")
+                    if (!logsDirectory.exists()) {
+                        logsDirectory.mkdirs()  // Создаем каталог, если его нет
+                    }
+                    val filePath = "${logsDirectory.absolutePath}/flashlog.txt"
 
-                val logsDirectory = File(context.getExternalFilesDir(null), "MyLogs")
-                if (!logsDirectory.exists()) {
-                    logsDirectory.mkdirs()  // Создаем каталог, если его нет
-                }
-                val filePath = "${logsDirectory.absolutePath}/flashlog.txt"
-
-                sdkManager.collectDeviceAllFlashLog(filePath)
-            },
+                    sdkManager.collectDeviceAllFlashLog(filePath)
+                },
                 enabled = isConnected
             ) {
                 Text(text = "Start collect logs")
@@ -143,11 +145,46 @@ fun MainScreen(modifier: Modifier = Modifier) {
                     loading.value = true
                     println("??? Button Get PuffArray")
                     Timber.d("??? Button Get PuffArray")
-                    sdkManager.getGetPuffArray()
+//                    sdkManager.getGetPuffArray()
                 },
                 enabled = isConnected
             ) {
                 Text(text = "Get PuffArray")
+                Text(text = "Недоступно")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Row {
+                Button(
+                    onClick = {
+                        loading.value = true
+                        println("??? Button setCigarettesStartSearchDevice")
+                        Timber.d("??? Button setCigarettesStartSearchDevice")
+                        sdkManager.setCigarettesStartSearchDevice()
+                        isStartSearch = true
+                    },
+                    enabled = isConnected && !isStartSearch,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(text = "setCigarettesStartSearchDevice")
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    onClick = {
+                        loading.value = true
+                        println("??? Button setCigarettesStopSearchDeivce")
+                        Timber.d("??? Button setCigarettesStopSearchDeivce")
+                        sdkManager.setCigarettesStopSearchDeivce()
+                        isStartSearch = false
+                    },
+                    enabled = isConnected && isStartSearch,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(text = "setCigarettesStopSearchDeivce")
+                }
             }
             Spacer(modifier = Modifier.height(16.dp))
         }

@@ -7,6 +7,7 @@ import com.ido.ble.BLEManager
 import com.ido.ble.bluetooth.connect.ConnectFailedReason
 import com.ido.ble.bluetooth.device.BLEDevice
 import com.ido.ble.callback.BindCallBack
+import com.ido.ble.callback.CigarettesSetCallBack
 import com.ido.ble.callback.ConnectCallBack
 import com.ido.ble.callback.DeviceLogCallBack
 import com.ido.ble.callback.GetDeviceParaCallBack
@@ -19,7 +20,6 @@ import com.ido.ble.protocol.model.CigarettesDeviceInfo
 import com.ido.ble.protocol.model.CigarettesFriendMode
 import com.ido.ble.protocol.model.CigarettesGetOverPuffSettingReplayData
 import com.ido.ble.protocol.model.CigarettesGetPowerSettingReplayData
-import com.ido.ble.protocol.model.CigarettesGetPuffArrayReplyData
 import com.ido.ble.protocol.model.CigarettesLanguage
 import com.ido.ble.protocol.model.CigarettesMetaAI
 import com.ido.ble.protocol.model.CigarettesNightMode
@@ -208,6 +208,7 @@ class SDKManager(
 
         val callBack: GetDeviceParaCallBack.ICallBack = object : GetDeviceParaCallBack.ICallBack {
 
+
             override fun onGetBtA2dpHfpStatus(p0: BtA2dpHfpStatus?) {
                 loading.value = false
                 resultMeth.value = p0.toString()
@@ -215,12 +216,12 @@ class SDKManager(
                 Timber.d("??? registerGetDeviceParaCallBack onGetBtA2dpHfpStatus p0=$p0")
             }
 
-            override fun onGetPuffArray(p0: CigarettesGetPuffArrayReplyData?) {
-                loading.value = false
-                resultMeth.value = p0.toString()
-                println("??? registerGetDeviceParaCallBack onGetPuffArray p0=$p0")
-                Timber.d("??? registerGetDeviceParaCallBack onGetPuffArray p0=$p0")
-            }
+//            override fun onGetPuffArray(p0: CigarettesGetPuffArrayReplyData?) {
+//                loading.value = false
+//                resultMeth.value = p0.toString()
+//                println("??? registerGetDeviceParaCallBack onGetPuffArray p0=$p0")
+//                Timber.d("??? registerGetDeviceParaCallBack onGetPuffArray p0=$p0")
+//            }
 
             override fun onGetChildLockSetting(p0: CigarettesSetChildLock?) {
                 loading.value = false
@@ -335,12 +336,12 @@ class SDKManager(
         BLEManager.registerGetDeviceParaCallBack(callBack)
     }
 
-    fun getGetPuffArray(
-    ) {
-        println("??? getGetPuffArray")
-        Timber.d("??? getGetPuffArray")
-        BLEManager.getGetPuffArray()
-    }
+//    fun getGetPuffArray(
+//    ) {
+//        println("??? getGetPuffArray")
+//        Timber.d("??? getGetPuffArray")
+//        BLEManager.getGetPuffArray()
+//    }
 
     fun getGetChildLockSetting(
     ) {
@@ -447,25 +448,6 @@ class SDKManager(
         BLEManager.getPuffTotalNumber()
     }
 
-
-//    BLEManager.getGetPuffArray(CigarettesGetPuffArray cigarettesGetPuffArray)
-//    BLEManager.getGetChildLockSetting();
-//    BLEManager.getDeviceInfo()
-//    BLEManager.getPuffsControl()
-//    BLEManager.getSessionMode()
-//    BLEManager.getConsciousShield()
-//    BLEManager.getFriendMode()
-//    BLEManager.getMetaAi()
-//    BLEManager.getByttery()
-//    BLEManager.getScreen()
-//    BLEManager.getVolume()
-//    BLEManager.getLanguage()
-//    BLEManager.getNightMode()
-//    BLEManager.getPowerSetting()
-//    BLEManager.getOverPuffSetting()
-//    BLEManager.getPuffTotalNumber()
-
-
     fun collectDeviceAllFlashLog(path: String) {
         println("??? collectDeviceAllFlashLog")
         Timber.d("??? collectDeviceAllFlashLog")
@@ -501,6 +483,36 @@ class SDKManager(
         }
         BLEManager.collectDeviceAllFlashLog(path, timeoutSecond, listenerTest);
         BLEManager.registerDeviceLogCallBack(deviceLogCallBack);
+    }
+
+
+    fun setCigarettesStartSearchDevice(
+    ) {
+        println("??? setCigarettesStartSearchDevice")
+        Timber.d("??? setCigarettesStartSearchDevice")
+
+        val cigarettescallback = object : CigarettesSetCallBack.ICallBack {
+            override fun onSuccess(p0: CigarettesSetCallBack.CigarettesSettingType?, p1: Any?) {
+                resultMeth.value = "p0 =" + p0.toString() + "p1 =" + p1.toString()
+                println("??? setCigarettesStartSearchDevice onSuccess p0=$p0 p1=$p1")
+                Timber.d("??? setCigarettesStartSearchDevice p0=$p0 p1=$p1")
+            }
+
+            override fun onFailed(p0: CigarettesSetCallBack.CigarettesSettingType?) {
+                println("??? setCigarettesStartSearchDevice onFailed p0=$p0")
+                Timber.d("??? setCigarettesStartSearchDevice onFailed p0=$p0")
+            }
+        }
+
+        BLEManager.registerCigarettesCallBack(cigarettescallback)
+
+        BLEManager.setCigarettesStartSearchDevice()
+    }
+
+    fun setCigarettesStopSearchDeivce() {
+        println("??? setCigarettesStopSearchDeivce")
+        Timber.d("??? setCigarettesStopSearchDeivce")
+        BLEManager.setCigarettesStopSearchDeivce()
     }
 
 
