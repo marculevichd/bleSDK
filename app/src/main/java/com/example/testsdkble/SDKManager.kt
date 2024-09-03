@@ -158,7 +158,6 @@ class SDKManager(
                 Timber.d("??? connectByAddress onInitCompleted p0=$p0")
             }
         })
-
         BLEManager.connect(BLEDevice)
         println("??? BLEManager.connect() called with device: ${BLEDevice.mDeviceAddress}")
         Timber.d("??? BLEManager.connect() called with device: ${BLEDevice.mDeviceAddress}")
