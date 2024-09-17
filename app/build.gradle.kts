@@ -89,6 +89,9 @@ dependencies {
     debugImplementation("com.willowtreeapps.hyperion:hyperion-timber:0.9.38")
 
 
+    implementation ("androidx.navigation:navigation-compose:2.8.0")
+
+
 //    implementation ("androidx.core:core-ktx:1.10.1")
 //    implementation ("androidx.activity:activity-compose:1.8.0")
 

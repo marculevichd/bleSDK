@@ -31,6 +31,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.testsdkble.ui.theme.TestSDKBLETheme
 import com.ido.ble.bluetooth.device.BLEDevice
 import timber.log.Timber
@@ -43,8 +45,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             TestSDKBLETheme {
+                val navController = rememberNavController()
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MainScreen()
+                    NavigationComponent(navController = navController)
                     RequestPermissions(LocalContext.current)
                 }
             }
@@ -54,13 +58,15 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
+fun MainScreen(
+    modifier: Modifier = Modifier,
+    navController: NavHostController
+) {
     // Состояние для хранения списка найденных устройств
     var devices by remember { mutableStateOf(listOf<BLEDevice>()) }
     var loading = remember { mutableStateOf(false) }
     var isConnected by remember { mutableStateOf(false) }
     var isStartSearch by remember { mutableStateOf(false) }
-    var isBind by remember { mutableStateOf(false) }
     var resultMeth =
         remember { mutableStateOf("здесь будут результаты методов (кроме найденых устройств)") }
     val context = LocalContext.current
@@ -72,6 +78,20 @@ fun MainScreen(modifier: Modifier = Modifier) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+
+        item {
+            Button(
+                onClick = {
+                    Timber.d("??? MainScreen Button navigate clicked")
+                    // Переход на экран установки настроек
+                    navController.navigate("settings_screen")
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "Перейти на экран установки настроек")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
 
         item {
@@ -119,9 +139,9 @@ fun MainScreen(modifier: Modifier = Modifier) {
         item {
             Button(
                 onClick = {
-                loading.value = true
-                println("??? MainScreen Button logs")
-                Timber.d("??? MainScreen Button logs")
+                    loading.value = true
+                    println("??? MainScreen Button logs")
+                    Timber.d("??? MainScreen Button logs")
 
 
                     val logsDirectory = File(context.getExternalFilesDir(null), "MyLogs")

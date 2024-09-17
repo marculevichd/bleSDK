@@ -33,8 +33,11 @@ import com.ido.ble.protocol.model.CigarettesSessionMode
 import com.ido.ble.protocol.model.CigarettesSetChildLock
 import com.ido.ble.protocol.model.CigarettesSetTheTimeTheDevice
 import com.ido.ble.protocol.model.CigarettesVolume
+import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
 import java.io.File
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
 class SDKManager(
@@ -210,7 +213,6 @@ class SDKManager(
 
         val callBack: GetDeviceParaCallBack.ICallBack = object : GetDeviceParaCallBack.ICallBack {
 
-
             override fun onGetBtA2dpHfpStatus(p0: BtA2dpHfpStatus?) {
                 loading.value = false
                 resultMeth.value = p0.toString()
@@ -358,7 +360,7 @@ class SDKManager(
         }
         BLEManager.registerGetPuffArrayCallBack(callBack)
 
-        val cigarettesGetPuffArray : CigarettesGetPuffArray = CigarettesGetPuffArray()
+        val cigarettesGetPuffArray: CigarettesGetPuffArray = CigarettesGetPuffArray()
         cigarettesGetPuffArray.first_puff_number = 0
         cigarettesGetPuffArray.last_puff_number = 0
         BLEManager.getGetPuffArray(cigarettesGetPuffArray)
@@ -535,6 +537,321 @@ class SDKManager(
         Timber.d("??? setCigarettesStopSearchDeivce")
         BLEManager.setCigarettesStopSearchDeivce()
     }
+
+    suspend fun setShield(
+        bool: Boolean,
+    ): Result<Boolean> {
+        return suspendCoroutine { continuation ->
+            val setting = CigarettesConsciousShield()
+            setting.conscious_shield = if (bool) 1 else 0
+
+            val setCallBack = object : CigarettesSetCallBack.ICallBack {
+                override fun onSuccess(
+                    type: CigarettesSetCallBack.CigarettesSettingType?,
+                    data: Any?
+                ) {
+                    continuation.resume(Result.success(true)) // Возвращаем результат
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Настройка успешно изменена")
+                    Timber.d("Настройка успешно изменена")
+                }
+
+                override fun onFailed(type: CigarettesSetCallBack.CigarettesSettingType?) {
+                    continuation.resume(Result.failure(Exception("Failed to set setting")))
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Ошибка при изменении настройки")
+                    Timber.e("Ошибка при изменении настройки")
+                }
+            }
+
+            // Регистрируем колбек и вызываем метод SDK
+            BLEManager.registerCigarettesCallBack(setCallBack)
+            BLEManager.settingConsciousShield(setting)
+        }
+    }
+
+    suspend fun setGuestMode(
+        bool: Boolean,
+    ): Result<Boolean> {
+        return suspendCoroutine { continuation ->
+            val setting = CigarettesFriendMode()
+            setting.friend_mode = if (bool) 1 else 0
+
+            val setCallBack = object : CigarettesSetCallBack.ICallBack {
+                override fun onSuccess(
+                    type: CigarettesSetCallBack.CigarettesSettingType?,
+                    data: Any?
+                ) {
+                    continuation.resume(Result.success(true)) // Возвращаем результат
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Настройка успешно изменена")
+                    Timber.d("Настройка успешно изменена")
+                }
+
+                override fun onFailed(type: CigarettesSetCallBack.CigarettesSettingType?) {
+                    continuation.resume(Result.failure(Exception("Failed to set setting")))
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Ошибка при изменении настройки")
+                    Timber.e("Ошибка при изменении настройки")
+                }
+            }
+
+            // Регистрируем колбек и вызываем метод SDK
+            BLEManager.registerCigarettesCallBack(setCallBack)
+            BLEManager.settingFriendMode(setting)
+        }
+    }
+
+    suspend fun setNightMode(
+        bool: Boolean,
+    ): Result<Boolean> {
+        return suspendCoroutine { continuation ->
+            val setting = CigarettesNightMode()
+            setting.night_mode = if (bool) 1 else 0
+
+            val setCallBack = object : CigarettesSetCallBack.ICallBack {
+                override fun onSuccess(
+                    type: CigarettesSetCallBack.CigarettesSettingType?,
+                    data: Any?
+                ) {
+                    continuation.resume(Result.success(true)) // Возвращаем результат
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Настройка успешно изменена")
+                    Timber.d("Настройка успешно изменена")
+                }
+
+                override fun onFailed(type: CigarettesSetCallBack.CigarettesSettingType?) {
+                    continuation.resume(Result.failure(Exception("Failed to set setting")))
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Ошибка при изменении настройки")
+                    Timber.e("Ошибка при изменении настройки")
+                }
+            }
+
+            // Регистрируем колбек и вызываем метод SDK
+            BLEManager.registerCigarettesCallBack(setCallBack)
+            BLEManager.settingNightMode(setting)
+        }
+    }
+
+
+    suspend fun getDeviceSettings(): DeviceSettings =
+        suspendCancellableCoroutine { continuation ->
+            var settings = DeviceSettings()
+            var responsesCount = 0 // Счетчик полученных параметров
+            val totalResponsesNeeded = 17 // Общее количество методов, от которых мы ждем ответ
+
+
+            val callBack: GetDeviceParaCallBack.ICallBack =
+                object : GetDeviceParaCallBack.ICallBack {
+
+                    override fun onGetBtA2dpHfpStatus(p0: BtA2dpHfpStatus?) {
+                        settings = settings.copy(btA2dpHfpStatus = p0?.let {
+                            BtA2dpHfpStatus(
+                                connected = it.bt_pair_states
+                            )
+                        })
+                        checkIfAllDataReceived()
+                    }
+
+                    override fun onGetChildLockSetting(p0: CigarettesSetChildLock?) {
+                        settings = settings.copy(childLockSetting = p0?.let {
+                            CigarettesSetChildLock(
+                                lockTime = it.lock_time
+                            )
+                        })
+                        checkIfAllDataReceived()
+                    }
+
+                    override fun onGetPowerSetting(p0: CigarettesGetPowerSettingReplayData?) {
+                        settings = settings.copy(powerSetting = p0?.let {
+                            CigarettesGetPowerSettingReplayData(power = it.power)
+                        })
+                        checkIfAllDataReceived()
+                    }
+
+                    override fun onGetOverSetting(p0: CigarettesGetOverPuffSettingReplayData?) {
+                        settings = settings.copy(overPuff = p0?.let {
+                            CigarettesGetOverPuffSettingReplayData(
+                                enable = it.enable != 0,
+                                overPuffTimeout = it.overpuff_timeout,
+                                puffCount = it.puff_count
+                            )
+                        })
+                        checkIfAllDataReceived()
+                    }
+
+                    override fun onGetDeviceInfo(p0: CigarettesDeviceInfo?) {
+                        settings = settings.copy(deviceInfo = p0?.let {
+                            CigarettesDeviceInfo(
+                                batteryLevel = it.battery_level,
+                                cartridgeId = it.cartridge_id,
+                                cartridgeResistance = it.cartdridge_resistance,
+                                chargeState = it.charge_state,
+                                macAddress = it.mac.toList(),
+                                rssi = it.rssi,
+                                puffStartVoltage = it.puff_start_voltage,
+                                puffEndVoltage = it.puff_end_voltage,
+                            )
+                        })
+                        checkIfAllDataReceived()
+                    }
+
+                    override fun onGetPuffsControl(p0: CigarettesPuffsControl?) {
+                        settings = settings.copy(puffsControl = p0?.let {
+                            CigarettesPuffsControl(
+                                autoModeOff = it.auto_mode_off == 0,
+                                manualModeOn = it.manual_mode_on != 0,
+                                puffNumber = it.puff_number,
+                                puffTimeInMinutes = it.puff_time_in_minutes
+                            )
+                        })
+                        checkIfAllDataReceived()
+                    }
+
+                    override fun onGetSessionMode(p0: CigarettesSessionMode?) {
+                        settings = settings.copy(sessionMode = p0?.let {
+                            CigarettesSessionMode(
+                                sessionMode = it.session_mode != 0,
+                                puffTimeInMinutes = it.puff_time_in_minutes,
+                                puffNumber = it.puff_number
+                            )
+                        })
+                        checkIfAllDataReceived()
+                    }
+
+                    override fun onGetConsciousShield(p0: CigarettesConsciousShield?) {
+                        settings = settings.copy(consciousShield = p0?.let {
+                            CigarettesConsciousShield(
+                                consciousShield = it.conscious_shield != 0
+                            )
+                        })
+                        checkIfAllDataReceived()
+                    }
+
+                    override fun onGetFriendMode(p0: CigarettesFriendMode?) {
+                        settings = settings.copy(friendMode = p0?.let {
+                            CigarettesFriendMode(
+                                friendMode = it.friend_mode != 0
+                            )
+                        })
+                        checkIfAllDataReceived()
+                    }
+
+                    override fun onGetMetaAI(p0: CigarettesMetaAI?) {
+                        settings = settings.copy(metaAI = p0?.let {
+                            CigarettesMetaAI(
+                                nicotineLevel = it.nicotine_level != 0,
+                                puffs = it.puffs != 0,
+                                dataCollection = it.data_collection != 0
+                            )
+                        })
+                        checkIfAllDataReceived()
+                    }
+
+                    override fun onGetBattery(p0: CigarettesBattery?) {
+                        settings = settings.copy(battery = p0?.let {
+                            CigarettesBattery(
+                                showOn = it.show_on != 0
+                            )
+                        })
+                        checkIfAllDataReceived()
+                    }
+
+                    override fun onGetScreen(p0: CigarettesScreen?) {
+                        settings = settings.copy(screen = p0?.let {
+                            CigarettesScreen(
+                                brightness = it.brightness,
+                                autoLockTime = it.auto_lock_time
+                            )
+                        })
+                        checkIfAllDataReceived()
+                    }
+
+                    override fun onGetVolume(p0: CigarettesVolume?) {
+                        settings = settings.copy(volume = p0?.let {
+                            CigarettesVolume(
+                                volume = it.volume
+                            )
+                        })
+                        checkIfAllDataReceived()
+                    }
+
+                    override fun onGetLanguage(p0: CigarettesLanguage?) {
+                        settings = settings.copy(language = p0?.let {
+                            CigarettesLanguage(
+                                language = it.language
+                            )
+                        })
+                        checkIfAllDataReceived()
+                    }
+
+                    override fun onGetNightMode(p0: CigarettesNightMode?) {
+                        settings = settings.copy(nightMode = p0?.let {
+                            CigarettesNightMode(
+                                nightMode = it.night_mode != 0
+                            )
+                        })
+                        checkIfAllDataReceived()
+                    }
+
+                    override fun onGetPuffTotalNumber(p0: CigarettesPuffTotalNumber?) {
+                        settings = settings.copy(puffTotalNumber = p0?.let {
+                            CigarettesPuffTotalNumber(
+                                puffTotalNumber = it.puff_number
+                            )
+                        })
+                        checkIfAllDataReceived()
+                    }
+
+                    override fun onGetTime(p0: CigarettesSetTheTimeTheDevice?) {
+                        settings = settings.copy(time = p0?.let {
+                            CigarettesSetTheTimeTheDevice(
+                                deviceTime = it.unix_time
+                            )
+                        })
+                        checkIfAllDataReceived()
+                    }
+
+                    // Метод для проверки, получены ли все данные
+                    private fun checkIfAllDataReceived() {
+                        responsesCount++
+                        if (responsesCount == totalResponsesNeeded) {
+                            continuation.resumeWith(Result.success(settings)) // Завершаем корутину
+                            BLEManager.unregisterGetDeviceParaCallBack(this) // Убираем колбек
+                        }
+                    }
+                }
+
+            // 1. Регистрируем колбек
+            BLEManager.registerGetDeviceParaCallBack(callBack)
+
+            // 2. Запрашиваем все необходимые параметры устройства
+            BLEManager.getGetChildLockSetting()
+            BLEManager.getPowerSetting()
+            BLEManager.getDeviceInfo()
+            BLEManager.getPuffsControl()
+            BLEManager.getSessionMode()
+            BLEManager.getConsciousShield()
+            BLEManager.getFriendMode()
+            BLEManager.getMetaAi()
+            BLEManager.getByttery()
+            BLEManager.getScreen()
+            BLEManager.getVolume()
+            BLEManager.getLanguage()
+            BLEManager.getNightMode()
+            BLEManager.getPuffTotalNumber()
+            BLEManager.getDeviceTime()
+
+            continuation.invokeOnCancellation {
+                BLEManager.unregisterGetDeviceParaCallBack(callBack)
+            }
+
+        }
+
+
+
+
 
 
 }
