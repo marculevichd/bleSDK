@@ -26,6 +26,7 @@ import com.ido.ble.protocol.model.CigarettesGetPuffArrayReplyData
 import com.ido.ble.protocol.model.CigarettesLanguage
 import com.ido.ble.protocol.model.CigarettesMetaAI
 import com.ido.ble.protocol.model.CigarettesNightMode
+import com.ido.ble.protocol.model.CigarettesPowerSettings
 import com.ido.ble.protocol.model.CigarettesPuffTotalNumber
 import com.ido.ble.protocol.model.CigarettesPuffsControl
 import com.ido.ble.protocol.model.CigarettesScreen
@@ -538,6 +539,141 @@ class SDKManager(
         BLEManager.setCigarettesStopSearchDeivce()
     }
 
+    suspend fun setChildLockSetting(value: Int): Result<Boolean> {
+        return suspendCoroutine { continuation ->
+            val setting = CigarettesSetChildLock()
+            setting.lock_time = value
+
+            val setCallBack = object : CigarettesSetCallBack.ICallBack {
+                override fun onSuccess(
+                    type: CigarettesSetCallBack.CigarettesSettingType?,
+                    data: Any?
+                ) {
+                    continuation.resume(Result.success(true)) // Возвращаем результат
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Настройка успешно изменена LockSetting")
+                    Timber.d("Настройка успешно изменена LockSetting")
+
+                }
+
+                override fun onFailed(type: CigarettesSetCallBack.CigarettesSettingType?) {
+                    continuation.resume(Result.failure(Exception("Failed to set setting")))
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Ошибка при изменении настройки LockSetting")
+                    Timber.e("Ошибка при изменении настройки LockSetting")
+                }
+            }
+
+            // Регистрируем колбек и вызываем метод SDK
+            BLEManager.registerCigarettesCallBack(setCallBack)
+            BLEManager.setCigarettesSetChildLockSetting(setting)
+        }
+    }
+
+    suspend fun setPower(value: Int): Result<Boolean> {
+        return suspendCoroutine { continuation ->
+            val setting = CigarettesPowerSettings()
+            setting.power = value
+
+            val setCallBack = object : CigarettesSetCallBack.ICallBack {
+                override fun onSuccess(
+                    type: CigarettesSetCallBack.CigarettesSettingType?,
+                    data: Any?
+                ) {
+                    continuation.resume(Result.success(true)) // Возвращаем результат
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Настройка успешно изменена Power")
+                    Timber.d("Настройка успешно изменена Power")
+                }
+
+                override fun onFailed(type: CigarettesSetCallBack.CigarettesSettingType?) {
+                    continuation.resume(Result.failure(Exception("Failed to set setting")))
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Ошибка при изменении настройки Power")
+                    Timber.e("Ошибка при изменении настройки Power")
+                }
+            }
+
+            // Регистрируем колбек и вызываем метод SDK
+            BLEManager.registerCigarettesCallBack(setCallBack)
+            BLEManager.setCigarettesPowerSetting(setting)
+        }
+    }
+
+    suspend fun setPuffControl(
+        autoMode: Boolean,
+        manualMode: Boolean,
+        puffNumber: Int?,
+        puffTimeInMinutes: Int?
+    ): Result<Boolean> {
+        return suspendCoroutine { continuation ->
+            val setting = CigarettesPuffsControl()
+            setting.auto_mode_off = if (autoMode) 1 else 0
+            setting.manual_mode_on = if (manualMode) 1 else 0
+            setting.puff_number = puffNumber ?: 0
+            setting.puff_time_in_minutes = puffTimeInMinutes ?: 0
+
+            val setCallBack = object : CigarettesSetCallBack.ICallBack {
+                override fun onSuccess(
+                    type: CigarettesSetCallBack.CigarettesSettingType?,
+                    data: Any?
+                ) {
+                    continuation.resume(Result.success(true)) // Возвращаем результат
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Настройка успешно изменена PuffControl")
+                    Timber.d("Настройка успешно изменена PuffControl")
+                }
+
+                override fun onFailed(type: CigarettesSetCallBack.CigarettesSettingType?) {
+                    continuation.resume(Result.failure(Exception("Failed to set setting")))
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Ошибка при изменении настройки PuffControl")
+                    Timber.e("Ошибка при изменении настройки PuffControl")
+                }
+            }
+
+            // Регистрируем колбек и вызываем метод SDK
+            BLEManager.registerCigarettesCallBack(setCallBack)
+            BLEManager.settingPuffsContro(setting)
+        }
+    }
+
+    suspend fun setSessionMode(
+        sessionMode: Boolean,
+        puffNumber: Int?,
+        puffTimeInMinutes: Int?
+    ): Result<Boolean> {
+        return suspendCoroutine { continuation ->
+            val setting = CigarettesSessionMode()
+            setting.session_mode = if (sessionMode) 1 else 0
+            setting.puff_number = puffNumber ?: 0
+            setting.puff_time_in_minutes = puffTimeInMinutes ?: 0
+
+            val setCallBack = object : CigarettesSetCallBack.ICallBack {
+                override fun onSuccess(
+                    type: CigarettesSetCallBack.CigarettesSettingType?,
+                    data: Any?
+                ) {
+                    continuation.resume(Result.success(true)) // Возвращаем результат
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Настройка успешно изменена SessionMode")
+                    Timber.d("Настройка успешно изменена SessionMode")
+                }
+
+                override fun onFailed(type: CigarettesSetCallBack.CigarettesSettingType?) {
+                    continuation.resume(Result.failure(Exception("Failed to set setting")))
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Ошибка при изменении настройки SessionMode")
+                    Timber.e("Ошибка при изменении настройки SessionMode")
+                }
+            }
+
+            // Регистрируем колбек и вызываем метод SDK
+            BLEManager.registerCigarettesCallBack(setCallBack)
+            BLEManager.settingSessionMode(setting)
+        }
+    }
+
     suspend fun setShield(
         bool: Boolean,
     ): Result<Boolean> {
@@ -552,15 +688,15 @@ class SDKManager(
                 ) {
                     continuation.resume(Result.success(true)) // Возвращаем результат
                     BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
-                    println("Настройка успешно изменена")
-                    Timber.d("Настройка успешно изменена")
+                    println("Настройка успешно изменена Shield")
+                    Timber.d("Настройка успешно изменена Shield")
                 }
 
                 override fun onFailed(type: CigarettesSetCallBack.CigarettesSettingType?) {
                     continuation.resume(Result.failure(Exception("Failed to set setting")))
                     BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
-                    println("Ошибка при изменении настройки")
-                    Timber.e("Ошибка при изменении настройки")
+                    println("Ошибка при изменении настройки Shield")
+                    Timber.e("Ошибка при изменении настройки Shield")
                 }
             }
 
@@ -584,15 +720,15 @@ class SDKManager(
                 ) {
                     continuation.resume(Result.success(true)) // Возвращаем результат
                     BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
-                    println("Настройка успешно изменена")
-                    Timber.d("Настройка успешно изменена")
+                    println("Настройка успешно изменена GuestMode")
+                    Timber.d("Настройка успешно изменена GuestMode")
                 }
 
                 override fun onFailed(type: CigarettesSetCallBack.CigarettesSettingType?) {
                     continuation.resume(Result.failure(Exception("Failed to set setting")))
                     BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
-                    println("Ошибка при изменении настройки")
-                    Timber.e("Ошибка при изменении настройки")
+                    println("Ошибка при изменении настройки GuestMode")
+                    Timber.e("Ошибка при изменении настройки GuestMode")
                 }
             }
 
@@ -616,15 +752,15 @@ class SDKManager(
                 ) {
                     continuation.resume(Result.success(true)) // Возвращаем результат
                     BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
-                    println("Настройка успешно изменена")
-                    Timber.d("Настройка успешно изменена")
+                    println("Настройка успешно изменена NightMode")
+                    Timber.d("Настройка успешно изменена NightMode")
                 }
 
                 override fun onFailed(type: CigarettesSetCallBack.CigarettesSettingType?) {
                     continuation.resume(Result.failure(Exception("Failed to set setting")))
                     BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
-                    println("Ошибка при изменении настройки")
-                    Timber.e("Ошибка при изменении настройки")
+                    println("Ошибка при изменении настройки NightMode")
+                    Timber.e("Ошибка при изменении настройки NightMode")
                 }
             }
 
@@ -848,10 +984,6 @@ class SDKManager(
             }
 
         }
-
-
-
-
 
 
 }
