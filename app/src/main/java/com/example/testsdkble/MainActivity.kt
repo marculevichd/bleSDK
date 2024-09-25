@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -24,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +37,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.testsdkble.ui.theme.TestSDKBLETheme
 import com.ido.ble.bluetooth.device.BLEDevice
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 
@@ -71,6 +74,7 @@ fun MainScreen(
         remember { mutableStateOf("здесь будут результаты методов (кроме найденых устройств)") }
     val context = LocalContext.current
     val sdkManager = SDKManager(loading = loading, resultMeth = resultMeth)
+    val scope = rememberCoroutineScope()
 
     LazyColumn(
         modifier = modifier
@@ -222,6 +226,50 @@ fun MainScreen(
                 Text(text = "getGetChildLockSetting")
             }
             Spacer(modifier = Modifier.height(16.dp))
+
+            Row {
+                Button(
+                    onClick = {
+                        loading.value = true
+                        println("??? Button setChildLockSetting 1")
+                        Timber.d("??? Button setChildLockSetting 1")
+                        scope.launch {
+                            sdkManager.setChildLockSetting(0)
+                        }
+                    },
+                    enabled = isConnected,
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Blue,
+                        containerColor = Color.Green,
+                    )
+                ) {
+                    Text(text = "setChildLockSetting 0 min")
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    onClick = {
+                        loading.value = true
+                        println("??? Button setChildLockSetting 2 ")
+                        Timber.d("??? Button setChildLockSetting 2")
+                        scope.launch {
+                            sdkManager.setChildLockSetting(2)
+                        }
+                    },
+                    enabled = isConnected,
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Blue,
+                        containerColor = Color.Green,
+                    )
+                ) {
+                    Text(text = "setChildLockSetting 2 min")
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+
         }
 
         item {
@@ -252,6 +300,57 @@ fun MainScreen(
                 Text(text = "getPuffsControl")
             }
             Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button set PuffsControl true puffNumber 15 puffTimeInMinutes 5")
+                    Timber.d("??? Button set sessionMod true autoMode = false manualMode = true puffNumber 15 puffTimeInMinutes 5")
+                    scope.launch {
+                        sdkManager.setPuffControl(
+                            autoMode = false,
+                            manualMode = true,
+                            puffNumber = 15,
+                            puffTimeInMinutes = 5
+                        )
+                    }
+                },
+                enabled = isConnected,
+                colors = ButtonDefaults.buttonColors(
+                    disabledContainerColor = Color.Blue,
+                    containerColor = Color.Green,
+                )
+            ) {
+                Text(text = "set PuffsControl autoMode false manualMode true + 15/5")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button set sessionMod true autoMode = true manualMode = false puffNumber 15 puffTimeInMinutes 5")
+                    Timber.d("??? Button set sessionMod true autoMode = true manualMode = false puffNumber 15 puffTimeInMinutes 5")
+                    scope.launch {
+                        sdkManager.setPuffControl(
+                            autoMode = true,
+                            manualMode = false,
+                            puffNumber = 15,
+                            puffTimeInMinutes = 5
+                        )
+                    }
+                },
+                enabled = isConnected,
+                colors = ButtonDefaults.buttonColors(
+                    disabledContainerColor = Color.Blue,
+                    containerColor = Color.Green,
+                )
+            ) {
+                Text(text = "set PuffsControl autoMode true manualMode false + 15/5")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
         }
 
         item {
@@ -267,6 +366,54 @@ fun MainScreen(
                 Text(text = "getSessionMode")
             }
             Spacer(modifier = Modifier.height(16.dp))
+
+            Row {
+                Button(
+                    onClick = {
+                        loading.value = true
+                        println("??? Button set sessionMod true puffNumber 15 puffTimeInMinutes 5")
+                        Timber.d("??? Button set sessionMod true puffNumber 15 puffTimeInMinutes 5")
+                        scope.launch {
+                            sdkManager.setSessionMode(
+                                sessionMode = false,
+                                puffNumber = 15,
+                                puffTimeInMinutes = 5
+                            )
+                        }
+                    },
+                    enabled = isConnected,
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Blue,
+                        containerColor = Color.Green,
+                    )
+                ) {
+                    Text(text = "set sessionMod true + 15/5")
+                }
+
+                Button(
+                    onClick = {
+                        loading.value = true
+                        println("??? Button set sessionMod false")
+                        Timber.d("??? Button set sessionMod false")
+                        scope.launch {
+                            sdkManager.setSessionMode(
+                                sessionMode = false,
+                                puffNumber = null,
+                                puffTimeInMinutes = null
+                            )
+                        }
+                    },
+                    enabled = isConnected,
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Blue,
+                        containerColor = Color.Green,
+                    )
+                ) {
+                    Text(text = "set sessionMod false")
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
         }
 
         item {
@@ -282,6 +429,51 @@ fun MainScreen(
                 Text(text = "getConsciousShield")
             }
             Spacer(modifier = Modifier.height(16.dp))
+
+
+            Row {
+                Button(
+                    onClick = {
+                        loading.value = true
+                        println("??? Button set shield true")
+                        Timber.d("??? Button set shield true")
+                        scope.launch {
+                            sdkManager.setShield(
+                                bool = true,
+                            )
+                        }
+                    },
+                    enabled = isConnected,
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Blue,
+                        containerColor = Color.Green,
+                    )
+                ) {
+                    Text(text = "set shield true")
+                }
+
+                Button(
+                    onClick = {
+                        loading.value = true
+                        println("??? Button set shield false")
+                        Timber.d("??? Button set shield false")
+                        scope.launch {
+                            sdkManager.setShield(
+                                bool = false,
+                            )
+                        }
+                    },
+                    enabled = isConnected,
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Blue,
+                        containerColor = Color.Green,
+                    )
+                ) {
+                    Text(text = "set shield false")
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
         }
 
         item {
@@ -295,6 +487,49 @@ fun MainScreen(
                 enabled = isConnected
             ) {
                 Text(text = "getFriendMode")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row {
+                Button(
+                    onClick = {
+                        loading.value = true
+                        println("??? Button set FriendMode true")
+                        Timber.d("??? Button set FriendMode true")
+                        scope.launch {
+                            sdkManager.setGuestMode(
+                                bool = true,
+                            )
+                        }
+                    },
+                    enabled = isConnected,
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Blue,
+                        containerColor = Color.Green,
+                    )
+                ) {
+                    Text(text = "set FriendMode true")
+                }
+
+                Button(
+                    onClick = {
+                        loading.value = true
+                        println("??? Button set FriendMode false")
+                        Timber.d("??? Button set FriendMode false")
+                        scope.launch {
+                            sdkManager.setGuestMode(
+                                bool = false,
+                            )
+                        }
+                    },
+                    enabled = isConnected,
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Blue,
+                        containerColor = Color.Green,
+                    )
+                ) {
+                    Text(text = "set FriendMode false")
+                }
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
@@ -387,6 +622,46 @@ fun MainScreen(
                 Text(text = "getNightMode")
             }
             Spacer(modifier = Modifier.height(16.dp))
+
+            Row {
+                Button(
+                    onClick = {
+                        loading.value = true
+                        println("??? Button set NightMode true")
+                        Timber.d("??? Button set NightMode true")
+                        scope.launch {
+                            sdkManager.setNightMode(true)
+                        }
+                    },
+                    enabled = isConnected,
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Blue,
+                        containerColor = Color.Green,
+                    )
+                ) {
+                    Text(text = "set NightMode true")
+                }
+
+                Button(
+                    onClick = {
+                        loading.value = true
+                        println("??? Button set NightMode false")
+                        Timber.d("??? Button set NightMode false")
+                        scope.launch {
+                            sdkManager.setNightMode(false)
+                        }
+                    },
+                    enabled = isConnected,
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Blue,
+                        containerColor = Color.Green,
+                    )
+                ) {
+                    Text(text = "set NightMode false")
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
         }
 
         item {
@@ -402,6 +677,46 @@ fun MainScreen(
                 Text(text = "getPowerSetting")
             }
             Spacer(modifier = Modifier.height(16.dp))
+
+            Row {
+                Button(
+                    onClick = {
+                        loading.value = true
+                        println("??? Button set power 15")
+                        Timber.d("??? Button set power 15")
+                        scope.launch {
+                            sdkManager.setPower(15)
+                        }
+                    },
+                    enabled = isConnected,
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Blue,
+                        containerColor = Color.Green,
+                    )
+                ) {
+                    Text(text = "set power 15")
+                }
+
+                Button(
+                    onClick = {
+                        loading.value = true
+                        println("??? Button set power 20")
+                        Timber.d("??? Button set power 20")
+                        scope.launch {
+                            sdkManager.setPower(20)
+                        }
+                    },
+                    enabled = isConnected,
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Blue,
+                        containerColor = Color.Green,
+                    )
+                ) {
+                    Text(text = "set power 20")
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
         }
 
         item {
