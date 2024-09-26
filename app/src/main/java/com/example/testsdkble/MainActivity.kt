@@ -685,7 +685,7 @@ fun MainScreen(
                         println("??? Button set power 15")
                         Timber.d("??? Button set power 15")
                         scope.launch {
-                            sdkManager.setPower(15)
+                            sdkManager.setPower(150)
                         }
                     },
                     enabled = isConnected,
@@ -703,7 +703,7 @@ fun MainScreen(
                         println("??? Button set power 20")
                         Timber.d("??? Button set power 20")
                         scope.launch {
-                            sdkManager.setPower(20)
+                            sdkManager.setPower(200)
                         }
                     },
                     enabled = isConnected,
