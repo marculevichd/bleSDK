@@ -392,7 +392,7 @@ class SDKManager(
     ) {
         println("??? getSessionMode")
         Timber.d("??? getSessionMode")
-        BLEManager.getPuffsControl()
+        BLEManager.getSessionMode()
     }
 
     fun getConsciousShield(
