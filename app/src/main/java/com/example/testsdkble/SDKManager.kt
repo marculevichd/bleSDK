@@ -392,7 +392,7 @@ class SDKManager(
     ) {
         println("??? getSessionMode")
         Timber.d("??? getSessionMode")
-        BLEManager.getPuffsControl()
+        BLEManager.getSessionMode()
     }
 
     fun getConsciousShield(
@@ -539,141 +539,6 @@ class SDKManager(
         BLEManager.setCigarettesStopSearchDeivce()
     }
 
-    suspend fun setChildLockSetting(value: Int): Result<Boolean> {
-        return suspendCoroutine { continuation ->
-            val setting = CigarettesSetChildLock()
-            setting.lock_time = value
-
-            val setCallBack = object : CigarettesSetCallBack.ICallBack {
-                override fun onSuccess(
-                    type: CigarettesSetCallBack.CigarettesSettingType?,
-                    data: Any?
-                ) {
-                    continuation.resume(Result.success(true)) // Возвращаем результат
-                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
-                    println("Настройка успешно изменена LockSetting")
-                    Timber.d("Настройка успешно изменена LockSetting")
-
-                }
-
-                override fun onFailed(type: CigarettesSetCallBack.CigarettesSettingType?) {
-                    continuation.resume(Result.failure(Exception("Failed to set setting")))
-                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
-                    println("Ошибка при изменении настройки LockSetting")
-                    Timber.e("Ошибка при изменении настройки LockSetting")
-                }
-            }
-
-            // Регистрируем колбек и вызываем метод SDK
-            BLEManager.registerCigarettesCallBack(setCallBack)
-            BLEManager.setCigarettesSetChildLockSetting(setting)
-        }
-    }
-
-    suspend fun setPower(value: Int): Result<Boolean> {
-        return suspendCoroutine { continuation ->
-            val setting = CigarettesPowerSettings()
-            setting.power = value
-
-            val setCallBack = object : CigarettesSetCallBack.ICallBack {
-                override fun onSuccess(
-                    type: CigarettesSetCallBack.CigarettesSettingType?,
-                    data: Any?
-                ) {
-                    continuation.resume(Result.success(true)) // Возвращаем результат
-                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
-                    println("Настройка успешно изменена Power")
-                    Timber.d("Настройка успешно изменена Power")
-                }
-
-                override fun onFailed(type: CigarettesSetCallBack.CigarettesSettingType?) {
-                    continuation.resume(Result.failure(Exception("Failed to set setting")))
-                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
-                    println("Ошибка при изменении настройки Power")
-                    Timber.e("Ошибка при изменении настройки Power")
-                }
-            }
-
-            // Регистрируем колбек и вызываем метод SDK
-            BLEManager.registerCigarettesCallBack(setCallBack)
-            BLEManager.setCigarettesPowerSetting(setting)
-        }
-    }
-
-    suspend fun setPuffControl(
-        autoMode: Boolean,
-        manualMode: Boolean,
-        puffNumber: Int?,
-        puffTimeInMinutes: Int?
-    ): Result<Boolean> {
-        return suspendCoroutine { continuation ->
-            val setting = CigarettesPuffsControl()
-            setting.auto_mode_off = if (autoMode) 1 else 0
-            setting.manual_mode_on = if (manualMode) 1 else 0
-            setting.puff_number = puffNumber ?: 0
-            setting.puff_time_in_minutes = puffTimeInMinutes ?: 0
-
-            val setCallBack = object : CigarettesSetCallBack.ICallBack {
-                override fun onSuccess(
-                    type: CigarettesSetCallBack.CigarettesSettingType?,
-                    data: Any?
-                ) {
-                    continuation.resume(Result.success(true)) // Возвращаем результат
-                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
-                    println("Настройка успешно изменена PuffControl")
-                    Timber.d("Настройка успешно изменена PuffControl")
-                }
-
-                override fun onFailed(type: CigarettesSetCallBack.CigarettesSettingType?) {
-                    continuation.resume(Result.failure(Exception("Failed to set setting")))
-                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
-                    println("Ошибка при изменении настройки PuffControl")
-                    Timber.e("Ошибка при изменении настройки PuffControl")
-                }
-            }
-
-            // Регистрируем колбек и вызываем метод SDK
-            BLEManager.registerCigarettesCallBack(setCallBack)
-            BLEManager.settingPuffsContro(setting)
-        }
-    }
-
-    suspend fun setSessionMode(
-        sessionMode: Boolean,
-        puffNumber: Int?,
-        puffTimeInMinutes: Int?
-    ): Result<Boolean> {
-        return suspendCoroutine { continuation ->
-            val setting = CigarettesSessionMode()
-            setting.session_mode = if (sessionMode) 1 else 0
-            setting.puff_number = puffNumber ?: 0
-            setting.puff_time_in_minutes = puffTimeInMinutes ?: 0
-
-            val setCallBack = object : CigarettesSetCallBack.ICallBack {
-                override fun onSuccess(
-                    type: CigarettesSetCallBack.CigarettesSettingType?,
-                    data: Any?
-                ) {
-                    continuation.resume(Result.success(true)) // Возвращаем результат
-                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
-                    println("Настройка успешно изменена SessionMode")
-                    Timber.d("Настройка успешно изменена SessionMode")
-                }
-
-                override fun onFailed(type: CigarettesSetCallBack.CigarettesSettingType?) {
-                    continuation.resume(Result.failure(Exception("Failed to set setting")))
-                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
-                    println("Ошибка при изменении настройки SessionMode")
-                    Timber.e("Ошибка при изменении настройки SessionMode")
-                }
-            }
-
-            // Регистрируем колбек и вызываем метод SDK
-            BLEManager.registerCigarettesCallBack(setCallBack)
-            BLEManager.settingSessionMode(setting)
-        }
-    }
-
     suspend fun setShield(
         bool: Boolean,
     ): Result<Boolean> {
@@ -688,6 +553,8 @@ class SDKManager(
                 ) {
                     continuation.resume(Result.success(true)) // Возвращаем результат
                     BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Настройка setShield успешно изменена")
+                    Timber.d("Настройка setShield успешно изменена")
                     println("Настройка успешно изменена Shield")
                     Timber.d("Настройка успешно изменена Shield")
                 }
@@ -695,6 +562,8 @@ class SDKManager(
                 override fun onFailed(type: CigarettesSetCallBack.CigarettesSettingType?) {
                     continuation.resume(Result.failure(Exception("Failed to set setting")))
                     BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Ошибка при изменении настройки setShield")
+                    Timber.e("Ошибка при изменении настройки setShield")
                     println("Ошибка при изменении настройки Shield")
                     Timber.e("Ошибка при изменении настройки Shield")
                 }
@@ -770,6 +639,139 @@ class SDKManager(
         }
     }
 
+    suspend fun setChildLockSetting(value: Int): Result<Boolean> {
+        return suspendCoroutine { continuation ->
+            val setting = CigarettesSetChildLock()
+            setting.lock_time = value
+
+            val setCallBack = object : CigarettesSetCallBack.ICallBack {
+                override fun onSuccess(
+                    type: CigarettesSetCallBack.CigarettesSettingType?,
+                    data: Any?
+                ) {
+                    continuation.resume(Result.success(true)) // Возвращаем результат
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Настройка setChildLockSetting успешно изменена")
+                    Timber.d("Настройка setChildLockSetting успешно изменена")
+                }
+
+                override fun onFailed(type: CigarettesSetCallBack.CigarettesSettingType?) {
+                    continuation.resume(Result.failure(Exception("Failed to set setting")))
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Ошибка при изменении настройки setChildLockSetting")
+                    Timber.e("Ошибка при изменении настройки setChildLockSetting")
+                }
+            }
+
+            // Регистрируем колбек и вызываем метод SDK
+            BLEManager.registerCigarettesCallBack(setCallBack)
+            BLEManager.setCigarettesSetChildLockSetting(setting)
+        }
+    }
+
+    suspend fun setPower(value: Int): Result<Boolean> {
+        return suspendCoroutine { continuation ->
+            val setting = CigarettesPowerSettings()
+            setting.power = value
+
+            val setCallBack = object : CigarettesSetCallBack.ICallBack {
+                override fun onSuccess(
+                    type: CigarettesSetCallBack.CigarettesSettingType?,
+                    data: Any?
+                ) {
+                    continuation.resume(Result.success(true)) // Возвращаем результат
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Настройка setPower успешно изменена")
+                    Timber.d("Настройка setPower успешно изменена")
+                }
+
+                override fun onFailed(type: CigarettesSetCallBack.CigarettesSettingType?) {
+                    continuation.resume(Result.failure(Exception("Failed to set setting")))
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Ошибка при изменении настройки setPower")
+                    Timber.e("Ошибка при изменении настройки setPower")
+                }
+            }
+
+            // Регистрируем колбек и вызываем метод SDK
+            BLEManager.registerCigarettesCallBack(setCallBack)
+            BLEManager.setCigarettesPowerSetting(setting)
+        }
+    }
+
+    suspend fun setSessionMode(
+        sessionMode: Boolean,
+        puffNumber: Int?,
+        puffTimeInMinutes: Int?
+    ): Result<Boolean> {
+        return suspendCoroutine { continuation ->
+            val setting = CigarettesSessionMode()
+            setting.session_mode = if (sessionMode) 1 else 0
+            setting.puff_number = puffNumber ?: 0
+            setting.puff_time_in_minutes = puffTimeInMinutes ?: 0
+
+            val setCallBack = object : CigarettesSetCallBack.ICallBack {
+                override fun onSuccess(
+                    type: CigarettesSetCallBack.CigarettesSettingType?,
+                    data: Any?
+                ) {
+                    continuation.resume(Result.success(true)) // Возвращаем результат
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Настройка setSessionMode успешно изменена")
+                    Timber.d("Настройка setSessionMode успешно изменена")
+                }
+
+                override fun onFailed(type: CigarettesSetCallBack.CigarettesSettingType?) {
+                    continuation.resume(Result.failure(Exception("Failed to set setting")))
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Ошибка при изменении настройки setSessionMode")
+                    Timber.e("Ошибка при изменении настройки setSessionMode")
+                }
+            }
+
+            // Регистрируем колбек и вызываем метод SDK
+            BLEManager.registerCigarettesCallBack(setCallBack)
+            BLEManager.settingSessionMode(setting)
+        }
+    }
+
+    suspend fun setPuffControl(
+        autoMode: Boolean,
+        manualMode: Boolean,
+        puffNumber: Int?,
+        puffTimeInMinutes: Int?
+    ): Result<Boolean> {
+        return suspendCoroutine { continuation ->
+            val setting = CigarettesPuffsControl()
+            setting.auto_mode_off = if (autoMode) 1 else 0
+            setting.manual_mode_on = if (manualMode) 1 else 0
+            setting.puff_number = puffNumber ?: 0
+            setting.puff_time_in_minutes = puffTimeInMinutes ?: 0
+
+            val setCallBack = object : CigarettesSetCallBack.ICallBack {
+                override fun onSuccess(
+                    type: CigarettesSetCallBack.CigarettesSettingType?,
+                    data: Any?
+                ) {
+                    continuation.resume(Result.success(true)) // Возвращаем результат
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Настройка setPuffControl успешно изменена")
+                    Timber.d("Настройка setPuffControl успешно изменена")
+                }
+
+                override fun onFailed(type: CigarettesSetCallBack.CigarettesSettingType?) {
+                    continuation.resume(Result.failure(Exception("Failed to set setting")))
+                    BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                    println("Ошибка при изменении настройки setPuffControl")
+                    Timber.e("Ошибка при изменении настройки setPuffControl")
+                }
+            }
+
+            // Регистрируем колбек и вызываем метод SDK
+            BLEManager.registerCigarettesCallBack(setCallBack)
+            BLEManager.settingPuffsContro(setting)
+        }
+    }
 
     suspend fun getDeviceSettings(): DeviceSettings =
         suspendCancellableCoroutine { continuation ->
