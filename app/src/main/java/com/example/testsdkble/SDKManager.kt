@@ -162,7 +162,8 @@ class SDKManager(
                 Timber.d("??? connectByAddress onInitCompleted p0=$p0")
             }
         })
-        BLEManager.connect(BLEDevice)
+//        BLEManager.connect(BLEDevice) !!!
+        BLEManager.connect(BLEDevice, "")
         println("??? BLEManager.connect() called with device: ${BLEDevice.mDeviceAddress}")
         Timber.d("??? BLEManager.connect() called with device: ${BLEDevice.mDeviceAddress}")
     }
@@ -639,10 +640,15 @@ class SDKManager(
         }
     }
 
-    suspend fun setChildLockSetting(value: Int): Result<Boolean> {
+    suspend fun setChildLockSetting(value: Int?, isOn: Boolean): Result<Boolean> {
         return suspendCoroutine { continuation ->
             val setting = CigarettesSetChildLock()
-            setting.lock_time = value
+            if(isOn){
+                setting.lock_state =CigarettesSetChildLock.LOCK
+            } else {
+                setting.lock_state = CigarettesSetChildLock.UNLOCK
+                setting.lock_time = value?:0
+            }
 
             val setCallBack = object : CigarettesSetCallBack.ICallBack {
                 override fun onSuccess(

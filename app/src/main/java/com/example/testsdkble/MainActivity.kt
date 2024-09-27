@@ -234,7 +234,7 @@ fun MainScreen(
                         println("??? Button setChildLockSetting 1")
                         Timber.d("??? Button setChildLockSetting 1")
                         scope.launch {
-                            sdkManager.setChildLockSetting(0)
+                            sdkManager.setChildLockSetting(2, isOn = true)
                         }
                     },
                     enabled = isConnected,
@@ -243,7 +243,7 @@ fun MainScreen(
                         containerColor = Color.Green,
                     )
                 ) {
-                    Text(text = "setChildLockSetting 0 min")
+                    Text(text = "setChildLockSetting ON")
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -253,7 +253,7 @@ fun MainScreen(
                         println("??? Button setChildLockSetting 2 ")
                         Timber.d("??? Button setChildLockSetting 2")
                         scope.launch {
-                            sdkManager.setChildLockSetting(2)
+                            sdkManager.setChildLockSetting(2, isOn = false)
                         }
                     },
                     enabled = isConnected,
@@ -262,14 +262,12 @@ fun MainScreen(
                         containerColor = Color.Green,
                     )
                 ) {
-                    Text(text = "setChildLockSetting 2 min")
+                    Text(text = "setChildLockSetting OFF")
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-
-
         }
 
         item {
