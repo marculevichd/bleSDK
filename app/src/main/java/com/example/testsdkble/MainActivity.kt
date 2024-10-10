@@ -174,7 +174,23 @@ fun MainScreen(
                 enabled = isConnected
             ) {
                 Text(text = "Get PuffArray")
-                Text(text = "Недоступно")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button Set random Time")
+                    Timber.d("??? Set random Time")
+                    scope.launch {
+                        sdkManager.setTime()
+                    }
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "Set random Time")
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
