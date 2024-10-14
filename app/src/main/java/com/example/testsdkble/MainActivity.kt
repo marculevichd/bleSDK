@@ -83,20 +83,6 @@ fun MainScreen(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
 
-        item {
-            Button(
-                onClick = {
-                    Timber.d("??? MainScreen Button navigate clicked")
-                    // Переход на экран установки настроек
-                    navController.navigate("settings_screen")
-                },
-                enabled = isConnected
-            ) {
-                Text(text = "Перейти на экран установки настроек")
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-
 
         item {
             Box(
