@@ -290,6 +290,9 @@ class SDKManager(
             override fun onSucceed(p0: CigarettesGetPuffArrayReplyData?) {
                 resultMeth.value = p0.toString()
                 println("??? getGetPuffArray callback onSucceed p0=$p0")
+                println("??? getGetPuffArray callback onSucceed p0?.puff_counter=${p0?.puff_counter}")
+                println("??? getGetPuffArray callback onSucceed p0?.puff_array.size=${p0?.puff_array?.size}")
+                println("??? getGetPuffArray callback onSucceed p0?.progress=${p0?.progress}")
                 Timber.d("??? getGetPuffArray callback onSucceed p0=$p0")
             }
 
@@ -302,7 +305,7 @@ class SDKManager(
         BLEManager.registerGetPuffArrayCallBack(callBack)
         val cigarettesGetPuffArray = CigarettesGetPuffArray()
         cigarettesGetPuffArray.first_puff_number = 1
-        cigarettesGetPuffArray.last_puff_number = 10
+        cigarettesGetPuffArray.last_puff_number = 2
         BLEManager.getGetPuffArray(cigarettesGetPuffArray)
     }
 
