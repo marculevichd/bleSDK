@@ -182,6 +182,21 @@ fun MainScreen(
             Button(
                 onClick = {
                     loading.value = true
+                    println("??? Button getUserGoalData")
+                    Timber.d("??? Button getUserGoalData")
+                    sdkManager.getUserGoalData()
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "GetUserGoalData")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
                     println("??? Button Set random Time")
                     Timber.d("??? Set random Time")
                     scope.launch {
@@ -809,7 +824,7 @@ fun MainScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-            if (devices.size != 0) {
+            if (devices.isNotEmpty()) {
                 Text(text = "Сверху кликабельный мак-адрес- начнется подключение")
             }
         }

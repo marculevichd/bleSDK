@@ -11,8 +11,5 @@ fun NavigationComponent(navController: NavHostController) {
         composable("main_screen") {
             MainScreen(navController = navController)
         }
-//        composable("settings_screen") {
-//            SettingsScreen()
-//        }
     }
 }
