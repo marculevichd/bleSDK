@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "290691661418",
+    "project_id": "test-ble-sdk",
+    "storage_bucket": "test-ble-sdk.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:290691661418:android:4b755aa021a2282aec9413",
+        "android_client_info": {
+          "package_name": "com.example.testsdkble"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCEW3IgYpA95roVcTOH30_RigE8LHlbMA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
