@@ -92,6 +92,8 @@ dependencies {
 
     implementation ("androidx.navigation:navigation-compose:2.8.0")
 
+    implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
+
 
 //    implementation ("androidx.core:core-ktx:1.10.1")
 //    implementation ("androidx.activity:activity-compose:1.8.0")
