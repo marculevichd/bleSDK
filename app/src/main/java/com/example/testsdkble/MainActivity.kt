@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
@@ -234,6 +235,9 @@ fun MainScreen(
         }
 
         item {
+            var counterChildLock by remember { mutableStateOf(1) }
+
+            Spacer(modifier = Modifier.size(32.dp))
             Button(
                 onClick = {
                     loading.value = true
@@ -247,47 +251,72 @@ fun MainScreen(
             }
             Spacer(modifier = Modifier.height(16.dp))
 
-            Row {
-                Button(
-                    onClick = {
-                        loading.value = true
-                        println("??? Button setChildLockSetting 1")
-                        Timber.d("??? Button setChildLockSetting 1")
-                        scope.launch {
-                            sdkManager.setChildLockSetting(2, isOn = true)
-                        }
-                    },
-                    enabled = isConnected,
-                    colors = ButtonDefaults.buttonColors(
-                        disabledContainerColor = Color.Blue,
-                        containerColor = Color.Green,
-                    )
-                ) {
-                    Text(text = "setChildLockSetting ON")
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Button(
-                    onClick = {
-                        loading.value = true
-                        println("??? Button setChildLockSetting 2 ")
-                        Timber.d("??? Button setChildLockSetting 2")
-                        scope.launch {
-                            sdkManager.setChildLockSetting(2, isOn = false)
-                        }
-                    },
-                    enabled = isConnected,
-                    colors = ButtonDefaults.buttonColors(
-                        disabledContainerColor = Color.Blue,
-                        containerColor = Color.Green,
-                    )
-                ) {
-                    Text(text = "setChildLockSetting OFF")
-                }
-                Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button setChildLockSetting OFF ")
+                    Timber.d("??? Button setChildLockSetting OFF")
+                    scope.launch {
+                        sdkManager.setChildLockSetting(0, isOn = false)
+                    }
+                },
+                enabled = isConnected,
+                colors = ButtonDefaults.buttonColors(
+                    disabledContainerColor = Color.Blue,
+                    containerColor = Color.Green,
+                )
+            ) {
+                Text(text = "setChildLockSetting OFF")
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Column {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(
+                        onClick = {
+                            if (counterChildLock > 1) {
+                                counterChildLock--
+                            }
+                        },
+                        enabled = isConnected && counterChildLock > 1
+                    ) {
+                        Text(text = "-")
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = counterChildLock.toString(),
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Button(
+                        onClick = { counterChildLock++ },
+                        enabled = isConnected
+                    ) {
+                        Text(text = "+")
+                    }
+                }
+
+                Button(
+                    onClick = {
+                        loading.value = true
+                        println("??? Button setChildLockSetting ON")
+                        Timber.d("??? Button setChildLockSetting ON")
+                        scope.launch {
+                            sdkManager.setChildLockSetting(counterChildLock, isOn = true)
+                        }
+                    },
+                    enabled = isConnected,
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Blue,
+                        containerColor = Color.Green,
+                    )
+                ) {
+                    Text(text = "setChildLockSetting ON $counterChildLock")
+                }
+            }
+            Spacer(modifier = Modifier.height(32.dp))
         }
 
         item {
@@ -306,6 +335,13 @@ fun MainScreen(
         }
 
         item {
+            Spacer(modifier = Modifier.height(32.dp))
+
+            var counterPuffControlPuffNumber by remember { mutableStateOf(1) }
+            var counterPuffControlPuffTimeInMinutes by remember { mutableStateOf(1) }
+            var counterAutoMode by remember { mutableStateOf(false) }
+            var counterManualMode by remember { mutableStateOf(false) }
+
             Button(
                 onClick = {
                     loading.value = true
@@ -319,17 +355,138 @@ fun MainScreen(
             }
             Spacer(modifier = Modifier.height(16.dp))
 
+            Column {
+
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(
+                        onClick = {
+                            counterManualMode = false
+                        },
+                        enabled = isConnected
+                    ) {
+                        Text(text = "set false")
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "manualMode = $counterManualMode",
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Button(
+                        onClick = {
+                            counterManualMode = true
+                        },
+                        enabled = isConnected
+                    ) {
+                        Text(text = "set true")
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(
+                        onClick = {
+                            counterAutoMode = false
+                        },
+                        enabled = isConnected
+                    ) {
+                        Text(text = "set false")
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "autoMode = $counterAutoMode",
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Button(
+                        onClick = {
+                            counterAutoMode = true
+                        },
+                        enabled = isConnected
+                    ) {
+                        Text(text = "set true")
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(
+                        onClick = {
+                            if (counterPuffControlPuffTimeInMinutes > 1) {
+                                counterPuffControlPuffTimeInMinutes--
+                            }
+                        },
+                        enabled = isConnected && counterPuffControlPuffTimeInMinutes > 1
+                    ) {
+                        Text(text = "-")
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "puffTimeInMinute = $counterPuffControlPuffTimeInMinutes",
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Button(
+                        onClick = { counterPuffControlPuffTimeInMinutes++ },
+                        enabled = isConnected
+                    ) {
+                        Text(text = "+")
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(
+                        onClick = {
+                            if (counterPuffControlPuffNumber > 1) {
+                                counterPuffControlPuffNumber--
+                            }
+                        },
+                        enabled = isConnected && counterPuffControlPuffNumber > 1
+                    ) {
+                        Text(text = "-")
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "puffNumber = $counterPuffControlPuffNumber",
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Button(
+                        onClick = { counterPuffControlPuffNumber++ },
+                        enabled = isConnected
+                    ) {
+                        Text(text = "+")
+                    }
+                }
+            }
+
             Button(
                 onClick = {
                     loading.value = true
-                    println("??? Button set PuffsControl true puffNumber 15 puffTimeInMinutes 5")
-                    Timber.d("??? Button set sessionMod true autoMode = false manualMode = true puffNumber 15 puffTimeInMinutes 5")
+                    println("??? Button setPuffsControl autoMode = $counterAutoMode manualMode = $counterManualMode puffNumber = $counterPuffControlPuffNumber puffTimeInMinutes = $counterPuffControlPuffTimeInMinutes")
+                    Timber.d("??? Button setPuffsControl autoMode = $counterAutoMode manualMode = $counterManualMode puffNumber = $counterPuffControlPuffNumber puffTimeInMinutes = $counterPuffControlPuffTimeInMinutes")
                     scope.launch {
                         sdkManager.setPuffControl(
-                            autoMode = false,
-                            manualMode = true,
-                            puffNumber = 15,
-                            puffTimeInMinutes = 5
+                            autoMode = counterAutoMode,
+                            manualMode = counterManualMode,
+                            puffNumber = counterPuffControlPuffNumber,
+                            puffTimeInMinutes = counterPuffControlPuffTimeInMinutes
                         )
                     }
                 },
@@ -339,39 +496,18 @@ fun MainScreen(
                     containerColor = Color.Green,
                 )
             ) {
-                Text(text = "set PuffsControl autoMode false manualMode true + 15/5")
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-
-
-            Button(
-                onClick = {
-                    loading.value = true
-                    println("??? Button set sessionMod true autoMode = true manualMode = false puffNumber 15 puffTimeInMinutes 5")
-                    Timber.d("??? Button set sessionMod true autoMode = true manualMode = false puffNumber 15 puffTimeInMinutes 5")
-                    scope.launch {
-                        sdkManager.setPuffControl(
-                            autoMode = true,
-                            manualMode = false,
-                            puffNumber = 15,
-                            puffTimeInMinutes = 5
-                        )
-                    }
-                },
-                enabled = isConnected,
-                colors = ButtonDefaults.buttonColors(
-                    disabledContainerColor = Color.Blue,
-                    containerColor = Color.Green,
-                )
-            ) {
-                Text(text = "set PuffsControl autoMode true manualMode false + 15/5")
+                Text(text = "setPuffsControl autoMode = $counterAutoMode manualMode = $counterManualMode  puffNumber = $counterPuffControlPuffNumber puffTimeInMinutes = $counterPuffControlPuffTimeInMinutes")
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
+            Spacer(modifier = Modifier.height(32.dp))
         }
 
         item {
+            Spacer(modifier = Modifier.height(32.dp))
+
+            var counterSessionModePuffNumber by remember { mutableStateOf(1) }
+            var counterSessionModePuffTimeInMinutes by remember { mutableStateOf(1) }
+
             Button(
                 onClick = {
                     loading.value = true
@@ -385,53 +521,113 @@ fun MainScreen(
             }
             Spacer(modifier = Modifier.height(16.dp))
 
-            Row {
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button set sessionMod false")
+                    Timber.d("??? Button set sessionMod false")
+                    scope.launch {
+                        sdkManager.setSessionMode(
+                            sessionMode = false,
+                            puffNumber = null,
+                            puffTimeInMinutes = null
+                        )
+                    }
+                },
+                enabled = isConnected,
+                colors = ButtonDefaults.buttonColors(
+                    disabledContainerColor = Color.Blue,
+                    containerColor = Color.Green,
+                )
+            ) {
+                Text(text = "set sessionMod OFF")
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Button(
                     onClick = {
-                        loading.value = true
-                        println("??? Button set sessionMod true puffNumber 15 puffTimeInMinutes 5")
-                        Timber.d("??? Button set sessionMod true puffNumber 15 puffTimeInMinutes 5")
-                        scope.launch {
-                            sdkManager.setSessionMode(
-                                sessionMode = false,
-                                puffNumber = 15,
-                                puffTimeInMinutes = 5
-                            )
+                        if (counterSessionModePuffNumber > 1) {
+                            counterSessionModePuffNumber--
                         }
                     },
-                    enabled = isConnected,
-                    colors = ButtonDefaults.buttonColors(
-                        disabledContainerColor = Color.Blue,
-                        containerColor = Color.Green,
-                    )
+                    enabled = isConnected && counterSessionModePuffNumber > 1
                 ) {
-                    Text(text = "set sessionMod true + 15/5")
+                    Text(text = "-")
                 }
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "puffNumber = $counterSessionModePuffNumber"
+                )
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Button(
-                    onClick = {
-                        loading.value = true
-                        println("??? Button set sessionMod false")
-                        Timber.d("??? Button set sessionMod false")
-                        scope.launch {
-                            sdkManager.setSessionMode(
-                                sessionMode = false,
-                                puffNumber = null,
-                                puffTimeInMinutes = null
-                            )
-                        }
-                    },
-                    enabled = isConnected,
-                    colors = ButtonDefaults.buttonColors(
-                        disabledContainerColor = Color.Blue,
-                        containerColor = Color.Green,
-                    )
+                    onClick = { counterSessionModePuffNumber++ },
+                    enabled = isConnected
                 ) {
-                    Text(text = "set sessionMod false")
+                    Text(text = "+")
                 }
             }
+
             Spacer(modifier = Modifier.height(16.dp))
 
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Button(
+                    onClick = {
+                        if (counterSessionModePuffTimeInMinutes > 1) {
+                            counterSessionModePuffTimeInMinutes--
+                        }
+                    },
+                    enabled = isConnected && counterSessionModePuffTimeInMinutes > 1
+                ) {
+                    Text(text = "-")
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "PuffTimeInMinutes = $counterSessionModePuffTimeInMinutes"
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Button(
+                    onClick = { counterSessionModePuffTimeInMinutes++ },
+                    enabled = isConnected
+                ) {
+                    Text(text = "+")
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button setSessionMod ON puffNumber = $counterSessionModePuffNumber puffTimeInMinutes = $counterSessionModePuffTimeInMinutes")
+                    Timber.d("??? Button setSessionMod ON puffNumber = $counterSessionModePuffNumber puffTimeInMinutes = $counterSessionModePuffTimeInMinutes")
+                    scope.launch {
+                        sdkManager.setSessionMode(
+                            sessionMode = true,
+                            puffNumber = counterSessionModePuffNumber,
+                            puffTimeInMinutes = counterSessionModePuffTimeInMinutes
+                        )
+                    }
+                },
+                enabled = isConnected,
+                colors = ButtonDefaults.buttonColors(
+                    disabledContainerColor = Color.Blue,
+                    containerColor = Color.Green,
+                )
+            ) {
+                Text(text = "setSessionMod ON puffNumber = $counterSessionModePuffNumber puffTimeInMinutes = $counterSessionModePuffTimeInMinutes")
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
 
         item {
@@ -447,7 +643,6 @@ fun MainScreen(
                 Text(text = "getConsciousShield")
             }
             Spacer(modifier = Modifier.height(16.dp))
-
 
             Row {
                 Button(
@@ -683,6 +878,10 @@ fun MainScreen(
         }
 
         item {
+            Spacer(modifier = Modifier.height(32.dp))
+
+            var counterPower by remember { mutableStateOf(1) }
+
             Button(
                 onClick = {
                     loading.value = true
@@ -696,44 +895,59 @@ fun MainScreen(
             }
             Spacer(modifier = Modifier.height(16.dp))
 
-            Row {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Button(
                     onClick = {
-                        loading.value = true
-                        println("??? Button set power 15")
-                        Timber.d("??? Button set power 15")
-                        scope.launch {
-                            sdkManager.setPower(150)
+                        if (counterPower > 1) {
+                            counterPower--
                         }
                     },
-                    enabled = isConnected,
-                    colors = ButtonDefaults.buttonColors(
-                        disabledContainerColor = Color.Blue,
-                        containerColor = Color.Green,
-                    )
+                    enabled = isConnected && counterPower > 1
                 ) {
-                    Text(text = "set power 15")
+                    Text(text = "-")
                 }
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = counterPower.toString(),
+                )
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Button(
-                    onClick = {
-                        loading.value = true
-                        println("??? Button set power 20")
-                        Timber.d("??? Button set power 20")
-                        scope.launch {
-                            sdkManager.setPower(200)
-                        }
-                    },
-                    enabled = isConnected,
-                    colors = ButtonDefaults.buttonColors(
-                        disabledContainerColor = Color.Blue,
-                        containerColor = Color.Green,
-                    )
+                    onClick = { counterPower++ },
+                    enabled = isConnected
                 ) {
-                    Text(text = "set power 20")
+                    Text(text = "+")
                 }
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "BE CAREFUL!!! DONT SET VALUE LESS THEN 10 END MORE THEN 25",
+                )
             }
             Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button set power")
+                    Timber.d("??? Button set power")
+                    scope.launch {
+                        sdkManager.setPower(counterPower)
+                    }
+                },
+                enabled = isConnected,
+                colors = ButtonDefaults.buttonColors(
+                    disabledContainerColor = Color.Blue,
+                    containerColor = Color.Green,
+                )
+            ) {
+                Text(text = "SetPower $counterPower")
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
 
         }
 
