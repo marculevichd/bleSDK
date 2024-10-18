@@ -19,13 +19,13 @@ fun RequestPermissions(context: Context) {
         Manifest.permission.BLUETOOTH_SCAN,
         Manifest.permission.BLUETOOTH_CONNECT,
         Manifest.permission.BLUETOOTH_ADMIN,
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.READ_MEDIA_IMAGES,
-        Manifest.permission.READ_MEDIA_VIDEO,
-        Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-        Manifest.permission.NEARBY_WIFI_DEVICES,
         Manifest.permission.BLUETOOTH_ADVERTISE,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.POST_NOTIFICATIONS,
+        Manifest.permission.INTERNET,
+        // для андройда 8 и 9
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
     )
 
     // Лаунчер для запроса разрешений
