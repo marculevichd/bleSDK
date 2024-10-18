@@ -113,9 +113,12 @@ fun MainScreen(
                     Timber.d("??? MainScreen startScan onFind")
                     if (device != null) {
                         loading.value = true
-
-                        // Создаем новый список с добавленным устройством
-                        devices = devices + device
+                        val updatedDevices = if (device.mDeviceName == "Meta") {
+                            listOf(device) + devices
+                        } else {
+                            devices + device
+                        }
+                        devices = updatedDevices
                         println("??? MainScreen device added: ${device.mDeviceAddress}")
                         Timber.d("??? MainScreen device added: ${device.mDeviceAddress}")
                     }
@@ -183,15 +186,15 @@ fun MainScreen(
             Button(
                 onClick = {
                     loading.value = true
-                    println("??? Button Set random Time")
-                    Timber.d("??? Set random Time")
+                    println("??? Button Set Time")
+                    Timber.d("??? Set Time")
                     scope.launch {
                         sdkManager.setTime()
                     }
                 },
                 enabled = isConnected
             ) {
-                Text(text = "Set random Time")
+                Text(text = "Set Time")
             }
             Spacer(modifier = Modifier.height(16.dp))
         }

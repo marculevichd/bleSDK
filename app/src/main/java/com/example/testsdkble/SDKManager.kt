@@ -732,17 +732,14 @@ class SDKManager(
             val setting = CigarettesSetTheTimeTheDevice()
 
             val currentTime = System.currentTimeMillis() / 1000
-            val oneYearInSeconds = 365L * 24 * 60 * 60
-            val unixTime = currentTime - Random.nextLong(oneYearInSeconds)
+            setting.unix_time = currentTime
 
-            setting.unix_time = unixTime
-
-            val humanReadableTime = Instant.ofEpochSecond(unixTime)
+            val humanReadableTime = Instant.ofEpochSecond(currentTime)
                 .atZone(ZoneId.systemDefault())
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
-            Timber.d("Unix= $unixTime, в норм формете= $humanReadableTime")
-            println("Unix= $unixTime, в норм формете= $humanReadableTime")
+            Timber.d("Unix= $currentTime, в норм формете= $humanReadableTime")
+            println("Unix= $currentTime, в норм формете= $humanReadableTime")
 
             val setCallBack = object : CigarettesSetCallBack.ICallBack {
                 override fun onSuccess(
