@@ -138,7 +138,8 @@ class SDKManager(
                 Timber.d("??? connectByAddress onInitCompleted p0=$p0")
             }
         })
-        BLEManager.connect(BLEDevice, "")
+        val randomInt = Random.nextInt(1, 9999)
+        BLEManager.connect(BLEDevice, "$randomInt")
         println("??? BLEManager.connect() called with device: ${BLEDevice.mDeviceAddress}")
         Timber.d("??? BLEManager.connect() called with device: ${BLEDevice.mDeviceAddress}")
     }
