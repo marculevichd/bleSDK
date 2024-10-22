@@ -33,11 +33,13 @@ import com.ido.ble.protocol.model.CigarettesSessionMode
 import com.ido.ble.protocol.model.CigarettesSetChildLock
 import com.ido.ble.protocol.model.CigarettesSetTheTimeTheDevice
 import com.ido.ble.protocol.model.CigarettesVolume
+import com.ido.ble.protocol.model.FirmwareVersion
 import com.ido.ble.protocol.model.UserGoalData
 import timber.log.Timber
 import java.io.File
 import java.time.Instant
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -273,11 +275,20 @@ class SDKManager(
                 println("??? registerGetDeviceParaCallBack onGetUserGoalData p0=$p0")
                 Timber.d("??? registerGetDeviceParaCallBack onGetUserGoalData p0=$p0")
             }
+
+            override fun onGetFirmwareVersion(p0: FirmwareVersion?) {
+                loading.value = false
+                resultMeth.value = p0.toString()
+                println("??? registerGetDeviceParaCallBack onGetFirmwareVersion p0=$p0")
+                Timber.d("??? registerGetDeviceParaCallBack onGetFirmwareVersion p0=$p0")
+            }
         }
         BLEManager.registerGetDeviceParaCallBack(callBack)
     }
 
     fun getGetPuffArray(
+        valueFrom: Int,
+        valueTo: Int
     ) {
         println("??? getGetPuffArray")
         Timber.d("??? getGetPuffArray")
@@ -305,8 +316,8 @@ class SDKManager(
         }
         BLEManager.registerGetPuffArrayCallBack(callBack)
         val cigarettesGetPuffArray = CigarettesGetPuffArray()
-        cigarettesGetPuffArray.first_puff_number = 1
-        cigarettesGetPuffArray.last_puff_number = 2
+        cigarettesGetPuffArray.first_puff_number = valueFrom
+        cigarettesGetPuffArray.last_puff_number = valueTo
         BLEManager.getGetPuffArray(cigarettesGetPuffArray)
     }
 
@@ -420,6 +431,13 @@ class SDKManager(
         println("??? getPuffTotalNumber")
         Timber.d("??? getPuffTotalNumber")
         BLEManager.getPuffTotalNumber()
+    }
+
+    fun getFirmwareVersion(
+    ) {
+        println("??? getFirmwareVersion")
+        Timber.d("??? getFirmwareVersion")
+        BLEManager.getFirmwareVersion()
     }
 
     fun collectDeviceAllFlashLog(path: String) {
@@ -733,7 +751,8 @@ class SDKManager(
             val setting = CigarettesSetTheTimeTheDevice()
 
             val currentTime = System.currentTimeMillis() / 1000
-            setting.unix_time = currentTime
+            val zoneId = ZoneId.systemDefault()
+            val currentOffsetInHours = ZonedDateTime.now(zoneId).offset.totalSeconds / 3600.0
 
             val humanReadableTime = Instant.ofEpochSecond(currentTime)
                 .atZone(ZoneId.systemDefault())
@@ -741,6 +760,8 @@ class SDKManager(
 
             Timber.d("Unix= $currentTime, в норм формете= $humanReadableTime")
             println("Unix= $currentTime, в норм формете= $humanReadableTime")
+            Timber.d("zoneId= $zoneId,  в double формате= $currentOffsetInHours")
+            println("zoneId= $zoneId,  в double формате= $currentOffsetInHours")
 
             val setCallBack = object : CigarettesSetCallBack.ICallBack {
                 override fun onSuccess(
@@ -761,8 +782,9 @@ class SDKManager(
                 }
             }
 
+            setting.unix_time = currentTime
+            setting.time_zone = currentOffsetInHours.toFloat()
             BLEManager.registerCigarettesCallBack(setCallBack)
-
             BLEManager.settingDeviceTime(setting)
         }
     }

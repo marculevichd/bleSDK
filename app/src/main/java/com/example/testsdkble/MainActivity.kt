@@ -157,15 +157,96 @@ fun MainScreen(
             Button(
                 onClick = {
                     loading.value = true
-                    println("??? Button Get PuffArray")
-                    Timber.d("??? Button Get PuffArray")
-                    sdkManager.getGetPuffArray()
+                    println("??? Button Get firmware version")
+                    Timber.d("??? Button Get firmware version")
+                    sdkManager.getFirmwareVersion()
                 },
                 enabled = isConnected
             ) {
-                Text(text = "Get PuffArray")
+                Text(text = "Get firmware version")
             }
             Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            var counterGetPuffArray1 by remember { mutableStateOf(0) }
+            var counterGetPuffArray2 by remember { mutableStateOf(0) }
+
+            Column {
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(
+                        onClick = {
+                            if (counterGetPuffArray1 > 1) {
+                                counterGetPuffArray1--
+                            }
+                        },
+                        enabled = isConnected && counterGetPuffArray1 > 1
+                    ) {
+                        Text(text = "-")
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "from $counterGetPuffArray1",
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Button(
+                        onClick = { counterGetPuffArray1++ },
+                        enabled = isConnected
+                    ) {
+                        Text(text = "+")
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(
+                        onClick = {
+                            if (counterGetPuffArray2 > 1) {
+                                counterGetPuffArray2--
+                            }
+                        },
+                        enabled = isConnected && counterGetPuffArray2 > 1
+                    ) {
+                        Text(text = "-")
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "from $counterGetPuffArray2"
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Button(
+                        onClick = { counterGetPuffArray2++ },
+                        enabled = isConnected
+                    ) {
+                        Text(text = "+")
+                    }
+                }
+
+
+                Button(
+                    onClick = {
+                        loading.value = true
+                        println("??? Button Get PuffArray counterGetPuffArray1 = $counterGetPuffArray1 counterGetPuffArray2 = $counterGetPuffArray2")
+                        Timber.d("??? Button Get PuffArray")
+                        sdkManager.getGetPuffArray(counterGetPuffArray1, counterGetPuffArray2)
+                    },
+                    enabled = isConnected
+                ) {
+                    Text(text = "Get PuffArray from $counterGetPuffArray1 to $counterGetPuffArray2")
+                }
+                Spacer(modifier = Modifier.height(32.dp))
+            }
         }
 
         item {
