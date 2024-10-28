@@ -1,6 +1,11 @@
 package com.example.testsdkble
 
+import android.app.Activity
+import android.bluetooth.BluetoothAdapter
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -34,6 +39,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.testsdkble.ui.theme.TestSDKBLETheme
@@ -104,6 +111,29 @@ fun MainScreen(
                 )
             }
         }
+        item {
+            Button(onClick = {
+                val deviceName = Settings.Global.getString(context.contentResolver, "device_name")
+                println("??? deviceName = ${deviceName ?: "${Build.MANUFACTURER} ${Build.MODEL}"}")
+                Timber.d("??? deviceName = ${deviceName ?: "${Build.MANUFACTURER} ${Build.MODEL}"}")
+                resultMeth.value = deviceName ?: "${Build.MANUFACTURER} ${Build.MODEL}"
+            }) {
+                Text(text = "GET DEVICE NAME")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(onClick = {
+                val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+                val blueToothName = bluetoothAdapter.name
+                println("??? blueToothName = $blueToothName")
+            }) {
+                Text(text = "GET DEVICE BLUETOOTH NAME")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
         item {
             Button(onClick = {
                 loading.value = true
