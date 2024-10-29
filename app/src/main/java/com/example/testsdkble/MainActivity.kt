@@ -81,7 +81,7 @@ fun MainScreen(
     var resultMeth =
         remember { mutableStateOf("здесь будут результаты методов (кроме найденых устройств)") }
     val context = LocalContext.current
-    val sdkManager = SDKManager(loading = loading, resultMeth = resultMeth)
+    val sdkManager = SDKManager(loading = loading, resultMeth = resultMeth, context = context)
     val scope = rememberCoroutineScope()
 
     LazyColumn(

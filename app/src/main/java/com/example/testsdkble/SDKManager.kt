@@ -1,7 +1,9 @@
 package com.example.testsdkble
 
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import androidx.compose.runtime.MutableState
 import com.ido.ble.BLEManager
 import com.ido.ble.bluetooth.connect.ConnectFailedReason
@@ -48,7 +50,8 @@ import kotlin.random.Random
 
 class SDKManager(
     val loading: MutableState<Boolean>,
-    val resultMeth: MutableState<String>
+    val resultMeth: MutableState<String>,
+    val context: Context
 ) {
 
     fun startScan(
@@ -141,7 +144,9 @@ class SDKManager(
             }
         })
         val randomInt = Random.nextInt(1, 9999)
-        BLEManager.connect(BLEDevice, "$randomInt")
+        val deviceName = Settings.Global.getString(context.contentResolver, "device_name")
+
+        BLEManager.connect(BLEDevice, "$randomInt", deviceName)
         println("??? BLEManager.connect() called with device: ${BLEDevice.mDeviceAddress}")
         Timber.d("??? BLEManager.connect() called with device: ${BLEDevice.mDeviceAddress}")
     }
