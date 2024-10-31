@@ -147,6 +147,7 @@ class SDKManager(
         val deviceName = Settings.Global.getString(context.contentResolver, "device_name")
 
         BLEManager.connect(BLEDevice, "$randomInt", deviceName)
+        Timber.d("??? BLEManager.connect() params BLEManager.connect${BLEDevice} ${randomInt} ${deviceName}")
         println("??? BLEManager.connect() called with device: ${BLEDevice.mDeviceAddress}")
         Timber.d("??? BLEManager.connect() called with device: ${BLEDevice.mDeviceAddress}")
     }

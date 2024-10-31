@@ -128,6 +128,7 @@ fun MainScreen(
                 val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
                 val blueToothName = bluetoothAdapter.name
                 println("??? blueToothName = $blueToothName")
+                resultMeth.value = blueToothName
             }) {
                 Text(text = "GET DEVICE BLUETOOTH NAME")
             }
