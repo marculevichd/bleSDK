@@ -485,6 +485,13 @@ class SDKManager(
         BLEManager.getFirmwareVersion()
     }
 
+    fun disConnect(
+    ) {
+        println("??? disConnect")
+        Timber.d("??? disConnect")
+        BLEManager.disConnect()
+    }
+
     fun collectDeviceAllFlashLog(path: String) {
         println("??? collectDeviceAllFlashLog")
         Timber.d("??? collectDeviceAllFlashLog")

@@ -1123,6 +1123,22 @@ fun MainScreen(
             Spacer(modifier = Modifier.height(16.dp))
         }
 
+
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button disConnect")
+                    Timber.d("??? Button disConnect")
+                    sdkManager.disConnect()
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "disConnect")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
         item {
 
             Text(text = "Found Devices:")
