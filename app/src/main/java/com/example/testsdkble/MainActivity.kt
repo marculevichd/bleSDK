@@ -299,6 +299,21 @@ fun MainScreen(
             Button(
                 onClick = {
                     loading.value = true
+                    println("??? Button getCartridgeEncryptedInfo")
+                    Timber.d("??? Button getCartridgeEncryptedInfo")
+                    sdkManager.getCartridgeEncryptedInfo()
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "getCartridgeEncryptedInfo")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
                     println("??? Button Set Time")
                     Timber.d("??? Set Time")
                     scope.launch {
@@ -1093,6 +1108,20 @@ fun MainScreen(
             Spacer(modifier = Modifier.height(16.dp))
         }
 
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button unbind")
+                    Timber.d("??? Button unbind")
+                    sdkManager.unbind()
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "unbind")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
         item {
 

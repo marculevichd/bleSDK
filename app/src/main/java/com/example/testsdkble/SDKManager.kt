@@ -14,8 +14,10 @@ import com.ido.ble.callback.DeviceLogCallBack
 import com.ido.ble.callback.GetDeviceParaCallBack
 import com.ido.ble.callback.GetPuffArrayCallBack
 import com.ido.ble.callback.ScanCallBack
+import com.ido.ble.callback.UnbindCallBack
 import com.ido.ble.firmware.log.flash.ICollectFlashLogListener
 import com.ido.ble.protocol.model.BtA2dpHfpStatus
+import com.ido.ble.protocol.model.CartridgeEncryptedInfo
 import com.ido.ble.protocol.model.CigarettesBattery
 import com.ido.ble.protocol.model.CigarettesConsciousShield
 import com.ido.ble.protocol.model.CigarettesDeviceInfo
@@ -288,6 +290,13 @@ class SDKManager(
                 println("??? registerGetDeviceParaCallBack onGetFirmwareVersion p0=$p0")
                 Timber.d("??? registerGetDeviceParaCallBack onGetFirmwareVersion p0=$p0")
             }
+
+            override fun onGetCartridgeEncryptedInfo(p0: CartridgeEncryptedInfo?) {
+                loading.value = false
+                resultMeth.value = p0.toString()
+                println("??? registerGetDeviceParaCallBack onGetCartridgeEncryptedInfo p0=$p0")
+                Timber.d("??? registerGetDeviceParaCallBack onGetCartridgeEncryptedInfo p0=$p0")
+            }
         }
         BLEManager.registerGetDeviceParaCallBack(callBack)
     }
@@ -332,6 +341,36 @@ class SDKManager(
         println("??? getGetChildLockSetting")
         Timber.d("??? getGetChildLockSetting")
         BLEManager.getGetChildLockSetting()
+    }
+
+    fun getCartridgeEncryptedInfo(
+    ) {
+        println("??? getCartridgeEncryptedInfo")
+        Timber.d("??? getCartridgeEncryptedInfo")
+        BLEManager.getCartridgeEncryptedInfo()
+    }
+
+    fun unbind(
+    ) {
+        println("??? unbind")
+        Timber.d("??? unbind")
+
+        val unbindCallBack = object : UnbindCallBack.ICallBack {
+            override fun onSuccess() {
+                println("??? unbind unbindCallBack onSuccess")
+                Timber.d("??? unbind unbindCallBack onSuccess")
+            }
+
+            override fun onFailed() {
+                println("??? unbind unbindCallBack onFailed")
+                Timber.d("??? unbind unbindCallBack onFailed")
+            }
+        }
+
+        BLEManager.unregisterUnbindCallBack(unbindCallBack)
+        BLEManager.registerUnbindCallBack(unbindCallBack)
+        BLEManager.unbind()
+
     }
 
     fun getDeviceInfo(
