@@ -86,15 +86,16 @@ class SDKManager(
         }, 1000) // Задержка в 1 секунду
     }
 
-    fun connectByAddress(
+    private var connectCallback: ConnectCallBack.ICallBack? = null
+
+    fun connect(
         BLEDevice: BLEDevice,
         onSuccess: () -> Unit,
         OnTrable: () -> Unit,
     ) {
         println("??? connectByAddress")
         Timber.d("??? connectByAddress")
-
-        BLEManager.registerConnectCallBack(object : ConnectCallBack.ICallBack {
+        connectCallback = object : ConnectCallBack.ICallBack {
 
             override fun onConnectStart(p0: String?) {
                 println("??? connectByAddress onConnectStart p0=$p0")
@@ -144,11 +145,13 @@ class SDKManager(
                 println("??? connectByAddress onInitCompleted p0=$p0")
                 Timber.d("??? connectByAddress onInitCompleted p0=$p0")
             }
-        })
+        }
+        BLEManager.registerConnectCallBack(connectCallback)
         val randomInt = Random.nextInt(1, 9999)
         val deviceName = Settings.Global.getString(context.contentResolver, "device_name")
 
-        BLEManager.connect(BLEDevice, "$randomInt", deviceName)
+//        BLEManager.connect(BLEDevice, "$randomInt", deviceName) // todo почему то падает гат ошибка если есть id вторым параметром
+        BLEManager.connect(BLEDevice, "", deviceName)
         Timber.d("??? BLEManager.connect() params BLEManager.connect${BLEDevice} ${randomInt} ${deviceName}")
         println("??? BLEManager.connect() called with device: ${BLEDevice.mDeviceAddress}")
         Timber.d("??? BLEManager.connect() called with device: ${BLEDevice.mDeviceAddress}")
@@ -489,6 +492,9 @@ class SDKManager(
     ) {
         println("??? disConnect")
         Timber.d("??? disConnect")
+        BLEManager.unregisterConnectCallBack(connectCallback)
+        println("??? disConnect unregisterConnectCallBack")
+        Timber.d("??? disConnect unregisterConnectCallBack")
         BLEManager.disConnect()
     }
 
