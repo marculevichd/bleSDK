@@ -496,6 +496,13 @@ class SDKManager(
         println("??? disConnect unregisterConnectCallBack")
         Timber.d("??? disConnect unregisterConnectCallBack")
         BLEManager.disConnect()
+        BLEManager.autoConnect()
+    }
+
+    fun autoConnect() {
+        Timber.d("??? autoConnect")
+        println("??? autoConnect")
+        BLEManager.autoConnect()
     }
 
     fun collectDeviceAllFlashLog(path: String) {

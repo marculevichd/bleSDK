@@ -41,6 +41,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.testsdkble.ui.theme.TestSDKBLETheme
 import com.ido.ble.bluetooth.device.BLEDevice
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
@@ -1003,7 +1004,7 @@ fun MainScreen(
         item {
             Spacer(modifier = Modifier.height(32.dp))
 
-            var counterPower by remember { mutableStateOf(1) }
+            var counterPower by remember { mutableStateOf(10) }
 
             Button(
                 onClick = {
@@ -1025,7 +1026,7 @@ fun MainScreen(
                 Button(
                     onClick = {
                         if (counterPower > 1) {
-                            counterPower--
+                            counterPower -= 10
                         }
                     },
                     enabled = isConnected && counterPower > 1
@@ -1039,7 +1040,7 @@ fun MainScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Button(
-                    onClick = { counterPower++ },
+                    onClick = { counterPower += 10 },
                     enabled = isConnected
                 ) {
                     Text(text = "+")
@@ -1047,7 +1048,7 @@ fun MainScreen(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = "BE CAREFUL!!! DONT SET VALUE LESS THEN 10 END MORE THEN 25",
+                    text = "BE CAREFUL!!! DONT SET VALUE LESS THEN 10 AND MORE THEN 25",
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -1127,6 +1128,10 @@ fun MainScreen(
                     println("??? Button disConnect")
                     Timber.d("??? Button disConnect")
                     sdkManager.disConnect()
+                    scope.launch {
+                        delay(3000)
+                        sdkManager.autoConnect()
+                    }
                 },
                 enabled = isConnected
             ) {
