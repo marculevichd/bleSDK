@@ -1109,9 +1109,7 @@ fun MainScreen(
                 Text(text = "SetPower boost")
             }
 
-
             Spacer(modifier = Modifier.height(32.dp))
-
         }
 
         item {
@@ -1157,6 +1155,99 @@ fun MainScreen(
                 Text(text = "unbind")
             }
             Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            var tiltedReminder by remember { mutableStateOf(false) }
+            var noSmokingReminder by remember { mutableStateOf(false) }
+
+            Column {
+
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(
+                        onClick = {
+                            tiltedReminder = false
+                        },
+                        modifier = Modifier.weight(1f),
+                        enabled = isConnected
+                    ) {
+                        Text(text = "set false")
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "tiltedReminder = $tiltedReminder",
+                        modifier = Modifier.weight(1f),
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Button(
+                        onClick = {
+                            tiltedReminder = true
+                        },
+                        enabled = isConnected,
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Text(text = "set true")
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(
+                        onClick = {
+                            noSmokingReminder = false
+                        },
+                        enabled = isConnected,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(text = "set false")
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = "noSmokingReminder=$noSmokingReminder",
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Button(
+                        onClick = {
+                            noSmokingReminder = true
+                        },
+                        enabled = isConnected,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(text = "set true")
+                    }
+                }
+
+
+                Button(
+                    onClick = {
+                        loading.value = true
+                        println("??? Button setReminder")
+                        Timber.d("??? Button setReminder")
+                        scope.launch {
+                            sdkManager.setTiltedReminderAndSetTiltedNoSmokingReminder(
+                                tiltedReminder,
+                                noSmokingReminder
+                            )
+                        }
+                    },
+                    enabled = isConnected
+                ) {
+                    Text(text = "setReminder tiltedReminder=$tiltedReminder noSmokingReminder=$noSmokingReminder")
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+            }
         }
 
 

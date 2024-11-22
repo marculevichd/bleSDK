@@ -134,24 +134,12 @@ class SDKManager(
                 println("??? connectByAddress onInDfuMode p0=$p0")
                 Timber.d("??? connectByAddress onInDfuMode p0=$p0")
             }
-
-            override fun onDeviceInNotBindStatus(p0: String?) {
-                println("??? connectByAddress onDeviceInNotBindStatus p0=$p0")
-                Timber.d("??? connectByAddress onDeviceInNotBindStatus p0=$p0")
-                OnTrable()
-            }
-
-            override fun onInitCompleted(p0: String?) {
-                println("??? connectByAddress onInitCompleted p0=$p0")
-                Timber.d("??? connectByAddress onInitCompleted p0=$p0")
-            }
         }
         BLEManager.registerConnectCallBack(connectCallback)
         val randomInt = Random.nextInt(1, 9999)
         val deviceName = Settings.Global.getString(context.contentResolver, "device_name")
 
-//        BLEManager.connect(BLEDevice, "$randomInt", deviceName) // todo почему то падает гат ошибка если есть id вторым параметром
-        BLEManager.connect(BLEDevice, "", deviceName)
+        BLEManager.connect(BLEDevice, "$randomInt", deviceName)
         Timber.d("??? BLEManager.connect() params BLEManager.connect${BLEDevice} ${randomInt} ${deviceName}")
         println("??? BLEManager.connect() called with device: ${BLEDevice.mDeviceAddress}")
         Timber.d("??? BLEManager.connect() called with device: ${BLEDevice.mDeviceAddress}")
@@ -672,6 +660,38 @@ class SDKManager(
         }
     }
 
+    suspend fun setTiltedReminderAndSetTiltedNoSmokingReminder(
+        tiltedReminder: Boolean,
+        noSmokingReminder: Boolean,
+    ): Result<Boolean> {
+        return suspendCoroutine { continuation ->
+
+            val setCallBack = object : CigarettesSetCallBack.ICallBack {
+                override fun onSuccess(p0: CigarettesSetCallBack.CigarettesSettingType?, p1: Any?) {
+                    if (p0==CigarettesSetCallBack.CigarettesSettingType.SETTINGS_POSTURE_REMINDER_SWITCH){
+                        continuation.resume(Result.success(true))
+                        BLEManager.unregisterCigarettesCallBack(this)
+                        println("Настройка успешно изменена setTiltedReminderAndSetTiltedNoSmokingReminder")
+                        Timber.d("Настройка успешно изменена setTiltedReminderAndSetTiltedNoSmokingReminder")
+                    }
+                }
+
+                override fun onFailed(p0: CigarettesSetCallBack.CigarettesSettingType?) {
+                    if (p0==CigarettesSetCallBack.CigarettesSettingType.SETTINGS_POSTURE_REMINDER_SWITCH){
+                        continuation.resume(Result.failure(Exception("Failed to set setting")))
+                        BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
+                        println("Ошибка при изменении настройки setTiltedReminderAndSetTiltedNoSmokingReminder")
+                        Timber.e("Ошибка при изменении настройки setTiltedReminderAndSetTiltedNoSmokingReminder")
+                    }
+                }
+            }
+
+            BLEManager.registerCigarettesCallBack(setCallBack)
+            BLEManager.setTiltedReminder(tiltedReminder)
+            BLEManager.setTiltedNoSmokingReminder(noSmokingReminder)
+        }
+    }
+
     suspend fun setChildLockSetting(value: Int?, isOn: Boolean): Result<Boolean> {
         return suspendCoroutine { continuation ->
             val setting = CigarettesSetChildLock()
@@ -711,7 +731,19 @@ class SDKManager(
         return suspendCoroutine { continuation ->
             val setting = CigarettesPowerSettings()
             setting.power = value ?: 1
-            setting.power_mode = mode // 0 - soft 1 - normal 3 - boost
+            setting.power_mode = when (mode) {
+                0 -> {
+                    CigarettesPowerSettings.POWER_MODE_SOFT
+                }
+
+                1 -> {
+                    CigarettesPowerSettings.POWER_MODE_NORMAL
+                }
+
+                else -> {
+                    CigarettesPowerSettings.POWER_MODE_BOOST
+                }
+            }
 
             val setCallBack = object : CigarettesSetCallBack.ICallBack {
                 override fun onSuccess(
