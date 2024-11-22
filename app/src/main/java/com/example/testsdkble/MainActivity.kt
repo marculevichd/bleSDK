@@ -142,10 +142,10 @@ fun MainScreen(
                     Timber.d("??? MainScreen startScan onFind")
                     if (device != null) {
                         loading.value = true
-                        val updatedDevices = if (device.mDeviceName == "Meta") {
-                            listOf(device) + devices
+                        val updatedDevices = if (device.mDeviceName == "META") {
+                            devices + listOf(device)
                         } else {
-                            devices + device
+                            devices
                         }
                         devices = updatedDevices
                         println("??? MainScreen device added: ${device.mDeviceAddress}")
