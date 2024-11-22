@@ -707,10 +707,11 @@ class SDKManager(
         }
     }
 
-    suspend fun setPower(value: Int): Result<Boolean> {
+    suspend fun setPower(value: Int?, mode: Int): Result<Boolean> {
         return suspendCoroutine { continuation ->
             val setting = CigarettesPowerSettings()
-            setting.power = value
+            setting.power = value ?: 1
+            setting.power_mode = mode // 0 - soft 1 - normal 3 - boost
 
             val setCallBack = object : CigarettesSetCallBack.ICallBack {
                 override fun onSuccess(

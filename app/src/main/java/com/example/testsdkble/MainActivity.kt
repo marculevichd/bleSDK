@@ -1059,7 +1059,7 @@ fun MainScreen(
                     println("??? Button set power")
                     Timber.d("??? Button set power")
                     scope.launch {
-                        sdkManager.setPower(counterPower)
+                        sdkManager.setPower(value = null, mode = 0)
                     }
                 },
                 enabled = isConnected,
@@ -1068,8 +1068,47 @@ fun MainScreen(
                     containerColor = Color.Green,
                 )
             ) {
-                Text(text = "SetPower $counterPower")
+                Text(text = "SetPower soft")
             }
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button set power")
+                    Timber.d("??? Button set power")
+                    scope.launch {
+                        sdkManager.setPower(counterPower, 1)
+                    }
+                },
+                enabled = isConnected,
+                colors = ButtonDefaults.buttonColors(
+                    disabledContainerColor = Color.Blue,
+                    containerColor = Color.Green,
+                )
+            ) {
+                Text(text = "SetPower normal $counterPower")
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                onClick = {
+                    loading.value = true
+                    println("??? Button set power")
+                    Timber.d("??? Button set power")
+                    scope.launch {
+                        sdkManager.setPower(value = null, mode = 2)
+                    }
+                },
+                enabled = isConnected,
+                colors = ButtonDefaults.buttonColors(
+                    disabledContainerColor = Color.Blue,
+                    containerColor = Color.Green,
+                )
+            ) {
+                Text(text = "SetPower boost")
+            }
+
 
             Spacer(modifier = Modifier.height(32.dp))
 
