@@ -358,7 +358,6 @@ class SDKManager(
             }
         }
 
-        BLEManager.unregisterUnbindCallBack(unbindCallBack)
         BLEManager.registerUnbindCallBack(unbindCallBack)
         BLEManager.unbind()
 
