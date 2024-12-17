@@ -525,8 +525,10 @@ class SDKManager(
                 Timber.d("??? collectDeviceAllFlashLog deviceLogCallBack onGetHeatLog p0 = $p0")
             }
         }
-        BLEManager.collectDeviceAllFlashLog(path, timeoutSecond, listenerTest);
-        BLEManager.registerDeviceLogCallBack(deviceLogCallBack);
+        BLEManager.collectDeviceAllFlashLog(path, timeoutSecond, listenerTest)
+        BLEManager.collectUserOperateAllFlashLog(path, timeoutSecond, listenerTest)
+
+        BLEManager.registerDeviceLogCallBack(deviceLogCallBack)
     }
 
 
