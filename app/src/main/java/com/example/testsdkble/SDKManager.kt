@@ -526,6 +526,43 @@ class SDKManager(
             }
         }
         BLEManager.collectDeviceAllFlashLog(path, timeoutSecond, listenerTest)
+
+        BLEManager.registerDeviceLogCallBack(deviceLogCallBack)
+    }
+
+    fun collectUserOperateAllFlashLog(path: String) {
+        println("??? collectDeviceAllFlashLog")
+        Timber.d("??? collectDeviceAllFlashLog")
+
+        val timeoutSecond = 30
+
+        val listenerTest: ICollectFlashLogListener = object : ICollectFlashLogListener {
+            override fun onStart() {
+                println("??? collectDeviceAllFlashLog ICollectFlashLogListener onStart")
+                Timber.d("??? collectDeviceAllFlashLog ICollectFlashLogListener onStart")
+            }
+
+            override fun onFinish() {
+                println("??? collectUserOperateAllFlashLog ICollectFlashLogListener onFinish")
+                Timber.d("??? collectUserOperateAllFlashLog ICollectFlashLogListener onFinish")
+
+                val file = File(path)
+                if (file.exists()) {
+                    println("??? System Log file created at path: ${file.absolutePath}")
+                    Timber.d("??? System Log file created at path: ${file.absolutePath}")
+                } else {
+                    println("??? System Log file dont create")
+                    Timber.d("??? System Log file dont create")
+                }
+            }
+        }
+
+        val deviceLogCallBack = object : DeviceLogCallBack.ICallBack {
+            override fun onGetHeatLog(p0: String?) {
+                println("??? collectUserOperateAllFlashLog deviceLogCallBack onGetHeatLog p0 = $p0")
+                Timber.d("??? collectUserOperateAllFlashLog deviceLogCallBack onGetHeatLog p0 = $p0")
+            }
+        }
         BLEManager.collectUserOperateAllFlashLog(path, timeoutSecond, listenerTest)
 
         BLEManager.registerDeviceLogCallBack(deviceLogCallBack)
@@ -669,7 +706,7 @@ class SDKManager(
 
             val setCallBack = object : CigarettesSetCallBack.ICallBack {
                 override fun onSuccess(p0: CigarettesSetCallBack.CigarettesSettingType?, p1: Any?) {
-                    if (p0==CigarettesSetCallBack.CigarettesSettingType.SETTINGS_POSTURE_REMINDER_SWITCH){
+                    if (p0 == CigarettesSetCallBack.CigarettesSettingType.SETTINGS_POSTURE_REMINDER_SWITCH) {
                         continuation.resume(Result.success(true))
                         BLEManager.unregisterCigarettesCallBack(this)
                         println("Настройка успешно изменена setTiltedReminderAndSetTiltedNoSmokingReminder")
@@ -678,7 +715,7 @@ class SDKManager(
                 }
 
                 override fun onFailed(p0: CigarettesSetCallBack.CigarettesSettingType?) {
-                    if (p0==CigarettesSetCallBack.CigarettesSettingType.SETTINGS_POSTURE_REMINDER_SWITCH){
+                    if (p0 == CigarettesSetCallBack.CigarettesSettingType.SETTINGS_POSTURE_REMINDER_SWITCH) {
                         continuation.resume(Result.failure(Exception("Failed to set setting")))
                         BLEManager.unregisterCigarettesCallBack(this) // Убираем колбек
                         println("Ошибка при изменении настройки setTiltedReminderAndSetTiltedNoSmokingReminder")

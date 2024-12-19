@@ -185,6 +185,29 @@ fun MainScreen(
             Button(
                 onClick = {
                     loading.value = true
+                    println("??? MainScreen Button system logs ")
+                    Timber.d("??? MainScreen Button system  logs")
+
+
+                    val logsDirectory = File(context.getExternalFilesDir(null), "MySystemLogs")
+                    if (!logsDirectory.exists()) {
+                        logsDirectory.mkdirs()
+                    }
+                    val filePath = "${logsDirectory.absolutePath}/systemLogs.txt"
+
+                    sdkManager.collectUserOperateAllFlashLog(filePath)
+                },
+                enabled = isConnected
+            ) {
+                Text(text = "Start collect System logs")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(
+                onClick = {
+                    loading.value = true
                     println("??? Button Get firmware version")
                     Timber.d("??? Button Get firmware version")
                     sdkManager.getFirmwareVersion()
