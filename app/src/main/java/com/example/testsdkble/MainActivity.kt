@@ -209,6 +209,16 @@ fun MainScreen(
                 ) {
                     Button(
                         onClick = {
+                            if (counterGetPuffArray1 > 10) {
+                                counterGetPuffArray1-=10
+                            }
+                        },
+                        enabled = isConnected && counterGetPuffArray2 > 10
+                    ) {
+                        Text(text = "-10")
+                    }
+                    Button(
+                        onClick = {
                             if (counterGetPuffArray1 > 1) {
                                 counterGetPuffArray1--
                             }
@@ -229,6 +239,12 @@ fun MainScreen(
                     ) {
                         Text(text = "+")
                     }
+                    Button(
+                        onClick = { counterGetPuffArray1+=10 },
+                        enabled = isConnected
+                    ) {
+                        Text(text = "+10")
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -239,6 +255,17 @@ fun MainScreen(
                 ) {
                     Button(
                         onClick = {
+                            if (counterGetPuffArray2 > 10) {
+                                counterGetPuffArray2-=10
+                            }
+                        },
+                        enabled = isConnected && counterGetPuffArray2 > 10
+                    ) {
+                        Text(text = "-10")
+                    }
+
+                    Button(
+                        onClick = {
                             if (counterGetPuffArray2 > 1) {
                                 counterGetPuffArray2--
                             }
@@ -247,9 +274,10 @@ fun MainScreen(
                     ) {
                         Text(text = "-")
                     }
+
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "from $counterGetPuffArray2"
+                        text = "to $counterGetPuffArray2"
                     )
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -258,6 +286,12 @@ fun MainScreen(
                         enabled = isConnected
                     ) {
                         Text(text = "+")
+                    }
+                    Button(
+                        onClick = { counterGetPuffArray2+=10 },
+                        enabled = isConnected
+                    ) {
+                        Text(text = "+10")
                     }
                 }
 
